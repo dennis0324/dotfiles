@@ -1,0 +1,55 @@
+#!/usr/bin/env bash
+# Outputs have spaces in them, so let's make \n the IFS
+IFS=$'\n'
+QUESTION1="SetDefault"
+QUESTION2="RemoveFromList"
+# CONFIG=/home/$USER/.config/polybar/devices.conf
+# An option was passed, so let's check it
+if [[ ! -z "$@" ]]
+then
+    # SetDefault
+    if [[ "$@" == *"$QUESTION1"* ]]
+    then
+        var=`cat a.txt`
+        rm a.txt
+	    pactl set-default-sink "$var"
+	# RemoveFromList
+    elif [[ "$@" == *"$QUESTION2"* ]]
+    then
+        var=`cat a.txt`
+        hideName=$(cat /home/$USER/.config/polybar/devices.conf | grep "$var")
+        prefixName=$(echo $hideName | cut -d= -f1)
+        sed -i 's/'"${hideName}"'/'"${prefixName}"'=DO_NOT_SHOW_DEVICE/g' /home/$USER/.config/polybar/devices.conf
+        rm a.txt
+    # Question Selections
+    else
+        device=$(cat /home/$USER/.config/polybar/devices.conf | grep -e "$@" | cut -d: -f1)
+        # Figure out what the device name is based on the description passed
+        echo -en "\x00prompt\x1fSelect Options\n"
+	    # Try to set the default to the device chosen
+	    if [[ ! -z "$device" ]]
+	    then
+	        echo $device > a.txt
+		    echo $QUESTION1
+		    echo $QUESTION2
+	    fi
+    fi
+else
+    echo -en "\x00prompt\x1fSelect Output\n"
+    # Get the list of outputs based on the description, which is what makes sense to a human
+    # and is what we want to show in the menu
+    sinkedDivices=$(pactl list sinks | awk '/Name/{ DISK = $0":" ; } /Description/{ DISK1 =$0":" ; } /Active/{ printf "%s%s%s\n",DISK,DISK1,$0 } '|cut -d: -f2,4,6|sort)
+    echo "$sinkedDivices" | while read x
+    do
+        devicename=$(echo "$x" | cut -d: -f1)
+        describe=$(echo "$x" | cut -d: -f2 | xargs)
+        portname=$(echo "$x" | cut -d: -f3 | xargs)
+        nickname=$(cat /home/$USER/.config/polybar/devices.conf | grep $portname"=" | cut -d= -f2)
+        if [ $nickname != "DO_NOT_SHOW_DEVICE" ]
+        then
+        # outputs with cut may have spaces, so use empty xargs to remove them, and output that to the rofi list
+            echo "$nickname"|xargs
+        fi
+
+    done
+fi

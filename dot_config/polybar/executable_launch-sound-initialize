@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+
+# . devices.conf
+STRING=""
+connectedData=$(pactl list sinks | awk '/Name/{ DISK = $0":" ; } /Active/{ printf "%s%s\n",DISK,$0 } ' | cut -d: -f2,4 ) 
+# check config file exist
+if [ ! -e "devices.conf" ]
+then
+  touch "devices.conf"
+fi
+# get divices and config and set nickname
+# preserve pipeline to get while loop variable
+shopt -s lastpipe
+echo "$connectedData" | while read line
+do
+  # get device names
+  devicename=$(echo "$line" | cut -d: -f1)
+  portname=$(echo "$line" | cut -d: -f2 | xargs)
+  # get config data
+  if [[ -n $(cat /home/$USER/.config/polybar/devices.conf | grep $portname"=") ]]
+  then
+    nickname=$(cat /home/$USER/.config/polybar/devices.conf | grep $portname"=" | cut -d= -f2 | tr -d '"')
+    STRING="$STRING --node-nickname "'"'${devicename}":"${nickname:-${portname}}'"' 
+  else
+    echo $(echo "$devicename:$portname")"=$portname" >> "devices.conf"
+  fi
+done 
+# don't know how to put string argument in normal command
+# so work this around with 'eval'
+eval 'pulseaudio-control --icons-volume " , " --icon-muted " " --node-nicknames-from "device.description" '"${STRING}"' listen'
