@@ -63,8 +63,8 @@ bindsym $mod+Return exec kitty -o allow_remote_control=yes -o enabled_layouts=ta
 bindsym $mod+q kill
 
 # start dmenu (a program launcher)
-bindsym $mod+d exec --no-startup-id ~/.config/rofi/launchers/type-1/launcher.sh
-bindsym $mod+shift+d exec --no-startup-id /home/$USER/.config/rofi/launchers/power_launcher.sh
+bindsym $mod+d exec --no-startup-id ~/.config/rofi/launchers/app_launcher.sh
+bindsym $mod+shift+d exec --no-startup-id ~/.config/rofi/launchers/power_launcher.sh
 
 # A more modern dmenu replacement is rofi:
 # bindcode $mod+40 exec "rofi -modi drun,run -show drun"
