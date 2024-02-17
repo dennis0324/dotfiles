@@ -1,0 +1,43 @@
+---
+- name: Machine setup
+  hosts: localhost
+  become: true
+  connection: local
+  gather_facts: true
+
+  tasks:
+    - name: Get my user
+      ansible.builtin.set_fact:
+        remote_regular_user: "{{ ansible_env.SUDO_USER or ansible_user_id }}"
+
+    - name: Install packages
+      ansible.builtin.pacman:
+        name:
+          - git
+          - htop
+          - nvim
+          - gcc
+          - ripgrep
+          - poetry
+          - zsh
+          - fzf
+          - tmux
+          - neofetch
+          - xorg
+          - i3
+          - ly
+        state: present
+
+    - name: Change shell to zsh
+      ansible.builtin.user:
+        name: "{{ remote_regular_user }}"
+        shell: /usr/bin/zsh
+
+    - name: Start ly Service
+      become: yes
+      become_user: root
+      systemd:
+        name: ly
+        state: started
+        enable: yes
+      when: ansible_facts.services['ly.service'] is defined and ansible_facts.services['ly.service'].state != 'running'
