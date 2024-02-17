@@ -34,8 +34,6 @@
         shell: /usr/bin/zsh
 
     - name: Start ly Service
-      become: yes
-      become_user: root
       systemd:
         name: ly
         state: started
