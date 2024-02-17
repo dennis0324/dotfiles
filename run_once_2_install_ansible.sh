@@ -11,7 +11,7 @@ OS="$(uname -s)"
 case "${OS}" in
 Linux*)
 	if [ -f /etc/arch-release ]; then
-		install_on_fedora
+		install_on_arch
 	else
 		echo "Unsupported Linux distribution"
 		exit 1
