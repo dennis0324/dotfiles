@@ -1,0 +1,283 @@
+:root {
+  --bg: #101010;
+  --fg: #eaeaea;
+
+  /* black */
+  --palette-color-0: #1d1f21;
+  --palette-color-8: #666666;
+
+  /* red */
+  --palette-color-1: #cc6666;
+  --palette-color-9: #d54e53;
+
+  /* green */
+  --palette-color-2: #b5db68;
+  --palette-color-10: #b9ca4a;
+
+  /* yellow */
+  --palette-color-3: #f0c67a;
+  --palette-color-11: #e7c54a;
+
+  /* blue */
+  --palette-color-4: #81a2be;
+  --palette-color-12: #7aa6da;
+
+  /* magenta */
+  --palette-color-5: #b294bb;
+  --palette-color-13: #c397d9;
+
+  /* cyan */
+  --palette-color-6: #8abeb7;
+  --palette-color-14: #70c0b1;
+
+  /* white */
+  --palette-color-7: #c5c8c6;
+  --palette-color-15: #eaeaea;
+
+  --tab-background: #4448;
+  --visible-tab: #6668;
+  --tab-scrollbar: #18d;
+
+  --mode-normal-fg: #101010;
+  --mode-command-fg: #f54;
+  --mode-follow-fg: #f7a;
+  --mode-insert-fg: var(--palette-color-10);
+  --mode-explore-fg: #7aa6da;
+  --mode-search-fg: var(--palette-color-11);
+  --mode-pointer-fg: var(--palette-color-4);
+  --mode-pointer-bg: none;
+  --mode-visual-fg: var(--palette-color-13);
+  --mode-visual-bg: none;
+
+  --suggestions-border: #eee;
+  --suggestions-bg: #ddd;
+  --suggestions-selected: #fff;
+  --suggestions-url: #08f;
+  --suggestions-file: #f80;
+  --notification-border: #aaa;
+  --notification-date: #777;
+  --notification-permission: #777;
+  --notification-error: #f33;
+  --notification-warning: #f80;
+  --notification-info: #08f;
+  --notification-success: #0c0;
+
+  /* special pages */
+  --link-color: #08f;
+  --scrollbar-bg: #fff;
+  --scrollbar-thumb: #ddd;
+  --button-disabled: #777;
+  --code-fg: #000;
+  --code-bg: #fff;
+  --special-page-element-bg: #eee;
+  --special-page-element-border: #aaa;
+  --input-unfocused: #aaa;
+  --input-focused: #666;
+  --download-progress-fg: #fff;
+  --download-progress-bg: #eee;
+  --helppage-h1: #a00;
+  --helppage-h2: #c43;
+  --helppage-h3: #b75;
+  --code-command: #c55;
+  --helppage-countable: #0c0;
+}
+
+/* general */
+#tabs .status {
+  filter: invert(0.4);
+}
+
+/* special pages */
+#pointer,
+#cookiespage img,
+#downloadspage img,
+#historypage img {
+  filter: invert(1);
+}
+
+/* pointer config when cursor mode is on */
+#pointer {
+  background-color: #000;
+  animation: none !important;
+  background: #0ff7;
+}
+
+#historypage img.favicon {
+  filter: none;
+}
+
+/* settings for navbar color mode */
+[current-mode="normal"] {
+  --mode-fg: var(--mode-normal-fg);
+}
+[current-mode="command"] {
+  --mode-fg: var(--mode-command-fg);
+}
+[current-mode="insert"] {
+  --mode-fg: var(--mode-insert-fg);
+}
+[current-mode="follow"] {
+  --mode-fg: var(--mode-follow-fg);
+}
+[current-mode="explore"] {
+  --mode-fg: var(--mode-explore-fg);
+}
+[current-mode="search"] {
+  --mode-fg: var(--mode-search-fg);
+}
+[current-mode="pointer"] {
+  --mode-fg: var(--mode-pointer-fg);
+}
+[current-mode="visual"] {
+  --mode-fg: var(--mode-visual-fg);
+}
+
+body {
+  --mode-theme-bg: var(--mode-fg);
+}
+body[current-mode="normal"] {
+  --mode-theme-bg: var(--bg);
+}
+
+body #mode {
+  color: var(--fg);
+}
+body[current-mode="normal"] #mode {
+  color: var(--fg);
+}
+[current-mode="normal"] #url {
+  background: var(--bg);
+  color: var(--fg);
+}
+
+/* deleting logo */
+#logo {
+  display: none;
+}
+
+#url {
+  background-color: transparent;
+  border: none;
+}
+
+#navbar,
+#tabs {
+  font-family: "Mononoki Nerd Font" !important;
+  font-size: 11px;
+  font-weight: normal;
+  background: var(--bg);
+}
+#tabs > span {
+  color: var(--fg);
+}
+
+#tabs > span[suspended="suspended"] {
+  color: var(--palette-color-7);
+}
+#current-tab {
+  background-color: var(--fg) !important;
+  color: var(--bg) !important;
+}
+
+#navbar {
+  display: flex;
+  justify-content: flex-end;
+  flex-direction: row-reverse;
+  background: var(--mode-theme-bg);
+}
+
+#tabs {
+  background: var(--bg);
+  height: 20px;
+}
+#tabs > * {
+  height: 20px;
+}
+#tabs > span {
+  min-width: 0 !important;
+}
+#tabs > span > .favicon {
+  display: none;
+}
+#tabs > span > span {
+  height: 20px;
+  display: grid;
+  align-items: center;
+  padding-left: 5px;
+  margin: 0 !important;
+}
+
+#mode {
+  text-transform: none;
+  font-size: 110%;
+}
+
+/* content-menu */
+#context-menu {
+  border: none;
+  background: var(--bg);
+  color: var(--palette-color-7);
+}
+#context-menu .selected {
+  color: var(-fg);
+  background-color: transparent !important;
+}
+
+#mode-suggestions {
+  display: none;
+}
+
+/* change order from nav - tab - conatiner to nav - container -tab */
+#page-container {
+  order: 2;
+}
+
+#tabs {
+  order: 3;
+}
+
+/* tabs */
+#app {
+  flex-direction: column-reverse;
+}
+#url-hover {
+  bottom: 4em;
+}
+
+/* navbar suggesttion box configuration */
+#suggest-dropdown {
+  top: auto;
+  bottom: 2.1em;
+  background-color: #101010;
+}
+#suggest-dropdown div {
+  background-color: transparent;
+  color: var(--palette-color-7);
+}
+#suggest-dropdown div.selected {
+  color: var(--fg);
+  background-color: transparent;
+}
+#mode-suggestions {
+  top: auto;
+  bottom: 2em;
+  flex-direction: column-reverse;
+}
+
+/* config where to spawn fixed component*/
+.bottomright {
+  right: 0.7em;
+  bottom: 4em;
+}
+.bottomleft {
+  left: 0.7em;
+  bottom: 4em;
+}
+.topright {
+  right: 0.7em;
+  top: 0.7em;
+}
+.topleft {
+  left: 0.7em;
+  top: 0.7em;
+}
