@@ -1,7 +1,7 @@
 #!/bin/bash
 
 install_on_arch() {
-	pacman -S ansible --no-confirm
+	pacman -S ansible --noconfirm
 }
 install_on_mac() {
 	brew install ansible
