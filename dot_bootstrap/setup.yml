@@ -37,10 +37,6 @@
         name: "{{ remote_regular_user }}"
         shell: /usr/bin/zsh
 
-    - name: facts dump
-      debug:
-        var: ansible_facts
-
     - name: Gathering services
       service_facts:
 
