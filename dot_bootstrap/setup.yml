@@ -39,7 +39,7 @@
 
     - name: facts dump
       debug:
-        var: ansible_facts.services
+        var: ansible_facts['service']
 
     - name: Start ly Service
       systemd:
