@@ -24,7 +24,8 @@
           - fzf
           - tmux
           - neofetch
-          - xorg
+          - xorg-server
+          - xf86-video-vesa
           - i3
           - ly
           - picom
