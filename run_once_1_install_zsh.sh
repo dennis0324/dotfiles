@@ -1,7 +1,8 @@
 #!/bin/bash
 
+echo "Zsh installing..."
 install_on_arch() {
-	pacman -S zsh
+	sudo pacman -S zsh
 }
 install_on_mac() {
 	brew install zsh
