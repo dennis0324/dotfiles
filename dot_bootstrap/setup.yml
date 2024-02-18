@@ -43,6 +43,6 @@
     - name: Start ly Service
       systemd:
         name: ly
-        state: started
-        enable: yes
+        state: "started"
+        enabled: true
       when: ansible_facts.services['ly.service'] is defined and ansible_facts.services['ly.service'].state != 'running'
