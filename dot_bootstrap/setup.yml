@@ -37,9 +37,13 @@
         name: "{{ remote_regular_user }}"
         shell: /usr/bin/zsh
 
+    - name: facts dump
+      debug:
+        var: ansible_facts.services
+
     - name: Start ly Service
       systemd:
         name: ly
         state: started
         enable: yes
-      when: ansible_facts.services['ly.service'] is defined and ansible_facts.services['ly.service'].state != 'running'
+      when: ansible_facts.services['ly.service'].state != 'running'
