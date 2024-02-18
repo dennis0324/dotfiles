@@ -27,6 +27,8 @@
           - xorg
           - i3
           - ly
+          - picom
+          - rofi
         state: present
 
     - name: Change shell to zsh
