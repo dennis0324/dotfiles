@@ -24,12 +24,10 @@ return {
       --   { name = "path", max_item_count = 5 },
       -- })
       opts.sources = cmp.config.sources({
-        { name = "nvim_lsp" },
-        { name = "buffer" },
-        { name = "path" },
-        { name = "copilot" },
-      }, {
-        { name = "buffer" },
+        { name = "nvim_lsp", priority = 9999, max_item_count = 5, group_index = 1 },
+        { name = "treesitter", priority = 5, max_item_count = 3, group_index = 1 },
+        { name = "path", priority = 3, max_item_count = 2, group_index = 1 },
+        { name = "copilot", priority = 1, max_item_count = 3, group_index = 1 },
       })
     end,
   },

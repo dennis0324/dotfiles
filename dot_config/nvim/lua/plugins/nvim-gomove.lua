@@ -1,7 +1,8 @@
 return {
   {
     "booperlv/nvim-gomove",
-    { "<C-n>", "<Plug>GoNSMDown", mode = "n", desc = "Move Line Down" },
+
+    -- { "<C-n>", "<Plug>GoNSMDown", mode = "n", desc = "Move Line Down" },
     -- keys = {
     --   { "<C-m>", "<Plug>GoNSMUp<CR>", mode = "n", desc = "Move Line Up" },
     --   { "<C-n>", "<Plug>GoVSMDown<CR>", mode = "x", desc = "Move Lines Down" },

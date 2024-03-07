@@ -12,6 +12,9 @@ keymap.del("n", "<leader>l")
 keymap.del("n", "H")
 keymap.del("n", "L")
 
+keymap.del({ "n", "i" }, "<A-j>")
+keymap.del({ "n", "i" }, "<A-k>")
+
 -- changing default keymap
 keymap.set("n", "<C-n>", ":m .+1<CR>==")
 keymap.set("n", "<C-m>", ":m .-2<CR>==")
@@ -67,11 +70,19 @@ keymap.set("n", "<leader>R", function()
 end)
 
 -- Setting up gomove keymap if gomove is installed
-if vim.fn.exists("nvim-gomove") then
-  print("package loaded")
-  keymap.set("n", "<C-n>", "<Plug>GoNSMDown", { desc = "Move Line Up" })
-  keymap.set("n", "<C-m>", "<Plug>GoNSMUp", { desc = "Move Line Down" })
+if package.loaded["plugins.nvim-gomove"] ~= nil then
+  keymap.set("n", "<C-i>", "<Plug>GoNSMDown", { desc = "Move Line Up" })
+  keymap.set("n", "<C-o>", "<Plug>GoNSMUp", { desc = "Move Line Down" })
 
-  keymap.set("x", "<C-n>", "<Plug>GoVSMDown", { desc = "Move Lines Up" })
-  keymap.set("x", "<C-m>", "<Plug>GoVSMUp", { desc = "Move Lines Down" })
+  keymap.set("x", "<C-i>", "<Plug>GoVSMDown", { desc = "Move Lines Up" })
+  keymap.set("x", "<C-o>", "<Plug>GoVSMUp", { desc = "Move Lines Down" })
 end
+
+-- keymap.set("n", "<leader>t", function()
+--   print(package.loaded["plugins.nvim-gomove"] ~= nil)
+--   -- for k, v in pairs(package.loaded) do
+--   --   if string.find(k, "gomove") then
+--   --     vim.print(k)
+--   --   end
+--   -- end
+-- end)
