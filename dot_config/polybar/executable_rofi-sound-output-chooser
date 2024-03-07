@@ -18,6 +18,9 @@ if [[ ! -z "$@" ]]; then
 		prefixName=$(echo $hideName | cut -d= -f1)
 		sed -i 's/'"${hideName}"'/'"${prefixName}"'=DO_NOT_SHOW_DEVICE/g' /home/$USER/.config/polybar/devices.conf
 		rm a.txt
+	# rename
+	elif [[ "$@" == *"$QUESTION3"* ]]; then
+		var=$(cat a.txt)
 	# Question Selections
 	else
 		device=$(cat /home/$USER/.config/polybar/devices.conf | grep -e "$@" | cut -d: -f1)
@@ -40,12 +43,14 @@ else
 		describe=$(echo "$x" | cut -d: -f2 | xargs)
 		portname=$(echo "$x" | cut -d: -f3 | xargs)
 
-		echo $devicename , $portname
-
 		nickname=$(cat /home/$USER/.config/polybar/devices.conf | grep $portname"=" | cut -d= -f2)
 		if [[ $nickname != "DO_NOT_SHOW_DEVICE" ]]; then
+			if [[ -z $nickname ]]; then
+				echo $describe
+			else
+				echo "$nickname" | xargs
+			fi
 			# outputs with cut may have spaces, so use empty xargs to remove them, and output that to the rofi list
-			echo "$nickname" | xargs
 		fi
 
 	done
