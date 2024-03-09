@@ -62,7 +62,7 @@
 
     - name: check
       debug:
-        msg: "{{ testing }}"
+        msg: "{{ testing['shell'] }}"
 
     - name: Change shell to zsh
       ansible.builtin.user:
