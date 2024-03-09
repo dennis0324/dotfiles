@@ -15,7 +15,7 @@
         manager: auto
 
     - name: check installed packages
-      set_fact: "{{ uninstalled_packages | default([]) + [ item | string ]}}"
+      set_fact: "{{ uninstalled_packages | default([]) + [ item ]}}"
       loop:
         - git
         - kitty
