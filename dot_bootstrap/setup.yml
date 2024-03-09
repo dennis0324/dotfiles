@@ -49,11 +49,14 @@
       debug:
         msg: "{{ uninstalled_packages }}"
 
-    - name: "Install packages..."
-      ansible.builtin.pacman:
-        name: "{{ item }}"
-        state: present
-      loop: "{{ uninstalled_packages }}"
+    # - name: "Install packages..."
+    #   ansible.builtin.pacman:
+    #     name: "{{ item }}"
+    #     state: present
+    #   loop: "{{ uninstalled_packages }}"
+    - name: check
+      debug:
+        msg: current_shell.stdout
 
     - name: Change shell to zsh
       ansible.builtin.user:
