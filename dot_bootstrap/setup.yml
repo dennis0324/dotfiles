@@ -10,50 +10,50 @@
       ansible.builtin.set_fact:
         remote_regular_user: "{{ ansible_env.SUDO_USER or ansible_user_id }}"
 
-    # - name: Gather the package facts...
-    #   ansible.builtin.package_facts:
-    #     manager: auto
-    #
-    # - name: Gathering services...
-    #   service_facts:
-    #
+    - name: Gather the package facts...
+      ansible.builtin.package_facts:
+        manager: auto
+
+    - name: Gathering services...
+      service_facts:
+
     - name: Checking using bash
       ansible.builtin.user:
         name: "{{ remote_regular_user }}"
       register: current_user
 
-    # - name: Check installed packages...
-    #   set_fact:
-    #     uninstalled_packages: "{{ uninstalled_packages | default([]) + [ item ]}}"
-    #   when: "ansible_facts.packages[ item ] is undefined"
-    #   loop:
-    #     - git
-    #     - kitty
-    #     - htop
-    #     - neovim
-    #     - gcc
-    #     - ripgrep
-    #     - poetry
-    #     - zsh
-    #     - fzf
-    #     - tmux
-    #     - neofetch
-    #     - xorg-server
-    #     - xf86-video-vesa
-    #     - i3
-    #     - ly
-    #     - picom
-    #     - rofi
+    - name: Check installed packages...
+      set_fact:
+        uninstalled_packages: "{{ uninstalled_packages | default([]) + [ item ]}}"
+      when: "ansible_facts.packages[ item ] is undefined"
+      loop:
+        - git
+        - kitty
+        - htop
+        - neovim
+        - gcc
+        - ripgrep
+        - poetry
+        - zsh
+        - fzf
+        - tmux
+        - neofetch
+        - xorg-server
+        - xf86-video-vesa
+        - i3
+        - ly
+        - picom
+        - rofi
 
-    # - name: uninstalled packages
-    #   debug:
-    #     msg: "{{ uninstalled_packages }}"
+    - name: uninstalled packages
+      debug:
+        msg: "{{ uninstalled_packages }}"
 
-    # - name: "Install packages..."
-    #   ansible.builtin.pacman:
-    #     name: "{{ item }}"
-    #     state: present
-    #   loop: "{{ uninstalled_packages }}"
+    - name: "Install packages..."
+      ansible.builtin.pacman:
+        name: "{{ item }}"
+        state: present
+      loop: "{{ uninstalled_packages }}"
 
     - name: Change shell to zsh
       ansible.builtin.user:
