@@ -56,7 +56,7 @@
     #   loop: "{{ uninstalled_packages }}"
     - name: check
       debug:
-        msg: current_shell.stdout
+        msg: "{{ current_shell.stdout }}"
 
     - name: Change shell to zsh
       ansible.builtin.user:
