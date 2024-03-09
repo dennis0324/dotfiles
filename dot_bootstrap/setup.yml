@@ -10,11 +10,16 @@
       ansible.builtin.set_fact:
         remote_regular_user: "{{ ansible_env.SUDO_USER or ansible_user_id }}"
 
-    - name: "Install packages..."
-      ansible.builtin.pacman:
-        name: "{{ item }}"
-        state: present
-      ansible.buildtin.shell: "echo Installing... {{ item }}"
+    - name: Gather the package facts...
+      ansible.builtin.package_facts:
+        manager: auto
+
+    - name: set installed packages
+      set_fact:
+        uninstalled_packages: []
+
+    - name: check installed packages
+      set_fact: "{{ uninstalled_packages + [{{ item }}]}}"
       loop:
         - git
         - kitty
@@ -33,6 +38,34 @@
         - ly
         - picom
         - rofi
+
+    - name: uninstalled packages
+      debug:
+        msg: "{{ uninstalled_packages }}"
+
+    # - name: "Install packages..."
+    #   ansible.builtin.pacman:
+    #     name: "{{ item }}"
+    #     state: present
+    #   ansible.buildtin.shell: "echo Installing... {{ item }}"
+    #   loop:
+    #     - git
+    #     - kitty
+    #     - htop
+    #     - neovim
+    #     - gcc
+    #     - ripgrep
+    #     - poetry
+    #     - zsh
+    #     - fzf
+    #     - tmux
+    #     - neofetch
+    #     - xorg-server
+    #     - xf86-video-vesa
+    #     - i3
+    #     - ly
+    #     - picom
+    #     - rofi
 
     - name: Change shell to zsh
       ansible.builtin.user:
