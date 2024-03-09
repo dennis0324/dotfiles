@@ -22,10 +22,6 @@
         cmd: "echo $0"
       register: current_shell
 
-    - name: print current shell
-      debug:
-        msg: "{{ current_shell }}"
-
     - name: Check installed packages...
       set_fact:
         uninstalled_packages: "{{ uninstalled_packages | default([]) + [ item ]}}"
@@ -49,24 +45,25 @@
         - picom
         - rofi
 
-    # - name: uninstalled packages
-    #   debug:
-    #     msg: "{{ uninstalled_packages }}"
-    #
-    # - name: "Install packages..."
-    #   ansible.builtin.pacman:
-    #     name: "{{ item }}"
-    #     state: present
-    #   loop: "{{ uninstalled_packages }}"
-    #
-    # - name: Change shell to zsh
-    #   ansible.builtin.user:
-    #     name: "{{ remote_regular_user }}"
-    #     shell: /usr/bin/zsh
-    #
-    # - name: Start ly Service
-    #   systemd:
-    #     name: ly
-    #     state: "started"
-    #     enabled: true
-    #   when: ansible_facts.services['ly.service'] is defined and ansible_facts.services['ly.service'].state != 'running'
+    - name: uninstalled packages
+      debug:
+        msg: "{{ uninstalled_packages }}"
+
+    - name: "Install packages..."
+      ansible.builtin.pacman:
+        name: "{{ item }}"
+        state: present
+      loop: "{{ uninstalled_packages }}"
+
+    - name: Change shell to zsh
+      ansible.builtin.user:
+        name: "{{ remote_regular_user }}"
+        shell: /usr/bin/zsh
+      when: "{{ current_shell.stdout }} != '/bin/zsh'"
+
+    - name: Start ly Service
+      systemd:
+        name: ly
+        state: "started"
+        enabled: true
+      when: ansible_facts.services['ly.service'] is defined and ansible_facts.services['ly.service'].state != 'running'
