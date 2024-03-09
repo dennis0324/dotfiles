@@ -14,7 +14,10 @@
       ansible.builtin.package_facts:
         manager: auto
 
-    - name: check installed packages
+    - name: Gathering services...
+      service_facts:
+
+    - name: check installed packages...
       set_fact:
         uninstalled_packages: "{{ uninstalled_packages | default([]) + [ item ]}}"
       when: "ansible_facts.packages[ item ] is undefined"
@@ -41,37 +44,17 @@
       debug:
         msg: "{{ uninstalled_packages }}"
 
-    # - name: "Install packages..."
-    #   ansible.builtin.pacman:
-    #     name: "{{ item }}"
-    #     state: present
-    #   ansible.buildtin.shell: "echo Installing... {{ item }}"
-    #   loop:
-    #     - git
-    #     - kitty
-    #     - htop
-    #     - neovim
-    #     - gcc
-    #     - ripgrep
-    #     - poetry
-    #     - zsh
-    #     - fzf
-    #     - tmux
-    #     - neofetch
-    #     - xorg-server
-    #     - xf86-video-vesa
-    #     - i3
-    #     - ly
-    #     - picom
-    #     - rofi
+    - name: "Install packages..."
+      ansible.builtin.pacman:
+        name: "{{ item }}"
+        state: present
+      ansible.buildtin.shell: "echo Installing... {{ item }}"
+      loop: "{{ uninstalled_packages }}"
 
     - name: Change shell to zsh
       ansible.builtin.user:
         name: "{{ remote_regular_user }}"
         shell: /usr/bin/zsh
-
-    - name: Gathering services
-      service_facts:
 
     - name: Start ly Service
       systemd:
