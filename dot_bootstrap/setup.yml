@@ -19,7 +19,7 @@
 
     - name: Checking using bash
       shell:
-        cmd: "echo $0"
+        cmd: "echo $SHELL"
       register: current_shell
 
     - name: Check installed packages...
