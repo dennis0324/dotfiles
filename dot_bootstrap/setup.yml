@@ -22,6 +22,10 @@
         cmd: "echo $0"
       register: current_shell
 
+    - name: print current shell
+      debug:
+        msg: "{{ current_shell }}"
+
     - name: Check installed packages...
       set_fact:
         uninstalled_packages: "{{ uninstalled_packages | default([]) + [ item ]}}"
