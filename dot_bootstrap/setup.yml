@@ -10,17 +10,17 @@
       ansible.builtin.set_fact:
         remote_regular_user: "{{ ansible_env.SUDO_USER or ansible_user_id }}"
 
-    - name: Gather the package facts...
-      ansible.builtin.package_facts:
-        manager: auto
-
-    - name: Gathering services...
-      service_facts:
-
-    - name: Checking using bash
-      shell:
-        cmd: "echo $SHELL"
-      register: current_shell
+    # - name: Gather the package facts...
+    #   ansible.builtin.package_facts:
+    #     manager: auto
+    #
+    # - name: Gathering services...
+    #   service_facts:
+    #
+    # - name: Checking using bash
+    #   shell:
+    #     cmd: "echo $SHELL"
+    #   register: current_shell
 
     # - name: Check installed packages...
     #   set_fact:
@@ -57,7 +57,7 @@
 
     - name: check2
       debug:
-        msg: "{{ lookup(''ansible.builtin.user',shell)}}"
+        msg: "{{ lookup('ansible.builtin.user',shell)}}"
 
     - name: Change shell to zsh
       ansible.builtin.user:
