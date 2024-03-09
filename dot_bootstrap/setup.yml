@@ -14,7 +14,7 @@
       block:
         - name: "Installing {{ item }}"
           ansible.builtin.pacman:
-            name: { { item } }
+            name: "{ { item } }"
             state: present
 
       rescue:
