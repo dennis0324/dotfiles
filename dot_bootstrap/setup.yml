@@ -19,9 +19,7 @@
         uninstalled_packages: []
 
     - name: check installed packages
-      set_fact: "{{ uninstalled_packages + [ uninstalled_package ]}}"
-      vars:
-        uninstalled_package: "{{ item }}"
+      set_fact: "{{ uninstalled_packages + [ item | string ]}}"
       loop:
         - git
         - kitty
