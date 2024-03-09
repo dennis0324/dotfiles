@@ -17,7 +17,7 @@
     - name: check installed packages
       set_fact:
         uninstalled_packages: "{{ uninstalled_packages | default([]) + [ item ]}}"
-      when: "{{ item }} is undefined"
+      when: "ansible_facts.packages['foobar'] is not defined"
       loop:
         - git
         - kitty
