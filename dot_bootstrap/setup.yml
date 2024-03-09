@@ -45,9 +45,9 @@
     #     - picom
     #     - rofi
 
-    - name: uninstalled packages
-      debug:
-        msg: "{{ uninstalled_packages }}"
+    # - name: uninstalled packages
+    #   debug:
+    #     msg: "{{ uninstalled_packages }}"
 
     # - name: "Install packages..."
     #   ansible.builtin.pacman:
