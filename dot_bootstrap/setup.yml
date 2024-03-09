@@ -59,7 +59,7 @@
       ansible.builtin.user:
         name: "{{ remote_regular_user }}"
         shell: /usr/bin/zsh
-      when: "{{ current_shell.stdout }} != '/bin/zsh'"
+      when: current_shell.stdout != '/bin/zsh'
 
     - name: Start ly Service
       systemd:
