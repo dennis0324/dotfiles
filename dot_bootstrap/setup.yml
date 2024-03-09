@@ -48,7 +48,6 @@
       ansible.builtin.pacman:
         name: "{{ item }}"
         state: present
-      ansible.buildtin.shell: "echo Installing... {{ item }}"
       loop: "{{ uninstalled_packages }}"
 
     - name: Change shell to zsh
