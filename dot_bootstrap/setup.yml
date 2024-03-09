@@ -10,27 +10,35 @@
       ansible.builtin.set_fact:
         remote_regular_user: "{{ ansible_env.SUDO_USER or ansible_user_id }}"
 
-    - name: Install packages
-      ansible.builtin.pacman:
-        name:
-          - git
-          - kitty
-          - htop
-          - neovim
-          - gcc
-          - ripgrep
-          - poetry
-          - zsh
-          - fzf
-          - tmux
-          - neofetch
-          - xorg-server
-          - xf86-video-vesa
-          - i3
-          - ly
-          - picom
-          - rofi
-        state: present
+    - name: "Install packages..."
+      block:
+        - name: "Installing {{ item }}"
+          ansible.builtin.pacman:
+            name: { { item } }
+            state: present
+
+      rescue:
+        - name: Install Warning
+          debug:
+            msg: "Already {{item}} installed"
+      loop:
+        - git
+        - kitty
+        - htop
+        - neovim
+        - gcc
+        - ripgrep
+        - poetry
+        - zsh
+        - fzf
+        - tmux
+        - neofetch
+        - xorg-server
+        - xf86-video-vesa
+        - i3
+        - ly
+        - picom
+        - rofi
 
     - name: Change shell to zsh
       ansible.builtin.user:
