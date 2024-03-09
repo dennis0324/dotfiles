@@ -56,6 +56,7 @@
     #   loop: "{{ uninstalled_packages }}"
     - name: check
       ansible.builtin.user:
+        name: "{{ remote_regular_user }}"
       register: home_settings
 
     - name: check2
