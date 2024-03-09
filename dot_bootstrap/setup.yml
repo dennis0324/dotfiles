@@ -14,12 +14,8 @@
       ansible.builtin.package_facts:
         manager: auto
 
-    - name: set installed packages
-      set_fact:
-        uninstalled_packages: []
-
     - name: check installed packages
-      set_fact: "{{ uninstalled_packages + [ item | string ]}}"
+      set_fact: "{{ uninstalled_packages | default([]) + [ item | string ]}}"
       loop:
         - git
         - kitty
