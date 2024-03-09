@@ -14,8 +14,7 @@
       ansible.builtin.pacman:
         name: "{{ item }}"
         state: present
-        debug:
-          msg: "{{ item }}"
+      shell: "echo Installing... {{ item }}"
 
       loop:
         - git
