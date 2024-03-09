@@ -55,8 +55,12 @@
     #     state: present
     #   loop: "{{ uninstalled_packages }}"
     - name: check
+      ansible.builtin.user:
+      register: home_settings
+
+    - name: check2
       debug:
-        msg: "{{ ansible.builtin.user.shell }}"
+        msg: "{{ home_settings.shell }}"
 
     - name: Change shell to zsh
       ansible.builtin.user:
