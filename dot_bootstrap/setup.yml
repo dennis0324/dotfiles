@@ -22,28 +22,28 @@
         cmd: "echo $SHELL"
       register: current_shell
 
-    - name: Check installed packages...
-      set_fact:
-        uninstalled_packages: "{{ uninstalled_packages | default([]) + [ item ]}}"
-      when: "ansible_facts.packages[ item ] is undefined"
-      loop:
-        - git
-        - kitty
-        - htop
-        - neovim
-        - gcc
-        - ripgrep
-        - poetry
-        - zsh
-        - fzf
-        - tmux
-        - neofetch
-        - xorg-server
-        - xf86-video-vesa
-        - i3
-        - ly
-        - picom
-        - rofi
+    # - name: Check installed packages...
+    #   set_fact:
+    #     uninstalled_packages: "{{ uninstalled_packages | default([]) + [ item ]}}"
+    #   when: "ansible_facts.packages[ item ] is undefined"
+    #   loop:
+    #     - git
+    #     - kitty
+    #     - htop
+    #     - neovim
+    #     - gcc
+    #     - ripgrep
+    #     - poetry
+    #     - zsh
+    #     - fzf
+    #     - tmux
+    #     - neofetch
+    #     - xorg-server
+    #     - xf86-video-vesa
+    #     - i3
+    #     - ly
+    #     - picom
+    #     - rofi
 
     - name: uninstalled packages
       debug:
@@ -56,13 +56,13 @@
     #   loop: "{{ uninstalled_packages }}"
     - name: check
       debug:
-        msg: "{{ current_shell.stdout }}"
+        msg: "{{ ansible.builtin.user.shell }}"
 
     - name: Change shell to zsh
       ansible.builtin.user:
         name: "{{ remote_regular_user }}"
         shell: /usr/bin/zsh
-      when: /usr/bin/zsh is match("/usr/bin/zsh")
+      when: '{{ current_shell.stdout }} is match("/usr/bin/zsh")'
 
     - name: Start ly Service
       systemd:
