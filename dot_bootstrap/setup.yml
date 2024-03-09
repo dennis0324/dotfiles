@@ -12,7 +12,7 @@
 
     - name: "Install packages..."
       ansible.builtin.pacman:
-        name: "{ { item } }"
+        name: "{{ item }}"
         state: present
       loop:
         - git
