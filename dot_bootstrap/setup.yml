@@ -11,16 +11,9 @@
         remote_regular_user: "{{ ansible_env.SUDO_USER or ansible_user_id }}"
 
     - name: "Install packages..."
-      block:
-        - name: "Installing {{ item }}"
-          ansible.builtin.pacman:
-            name: "{ { item } }"
-            state: present
-
-      rescue:
-        - name: Install Warning
-          debug:
-            msg: "Already {{item}} installed"
+      ansible.builtin.pacman:
+        name: "{ { item } }"
+        state: present
       loop:
         - git
         - kitty
