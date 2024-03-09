@@ -17,10 +17,10 @@
     # - name: Gathering services...
     #   service_facts:
     #
-    # - name: Checking using bash
-    #   shell:
-    #     cmd: "echo $SHELL"
-    #   register: current_shell
+    - name: Checking using bash
+      ansible.builtin.user:
+        name: "{{ remote_regular_user }}"
+      register: current_user
 
     # - name: Check installed packages...
     #   set_fact:
@@ -55,20 +55,11 @@
     #     state: present
     #   loop: "{{ uninstalled_packages }}"
 
-    - name: check22
-      ansible.builtin.user:
-        name: "{{ remote_regular_user }}"
-      register: testing
-
-    - name: check
-      debug:
-        msg: "{{ testing['shell'] }}"
-
     - name: Change shell to zsh
       ansible.builtin.user:
         name: "{{ remote_regular_user }}"
         shell: /usr/bin/zsh
-      when: '{{ current_shell.stdout }} is match("/usr/bin/zsh")'
+      when: '{{ current_user["shell"] }} is match("/usr/bin/zsh")'
 
     - name: Start ly Service
       systemd:
