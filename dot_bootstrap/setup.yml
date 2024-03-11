@@ -25,7 +25,9 @@
     - name: Check installed packages...
       set_fact:
         uninstalled_packages: "{{ uninstalled_packages | default([]) + [ item ]}}"
-      when: "ansible_facts.packages[ item ] is undefined"
+      when:
+        not ((ansible_facts.packages | dict2items | selectattr('key','in',item)) or
+        (ansible_facts.packages | dict2items | selectattr('key','match',item)))
       loop:
         - git
         - kitty
@@ -33,7 +35,6 @@
         - neovim
         - gcc
         - ripgrep
-        - poetry
         - zsh
         - fzf
         - tmux
@@ -48,13 +49,14 @@
 
     - name: uninstalled packages
       debug:
-        msg: "{{ uninstalled_packages }}"
+        msg: "{% if uninstalled_packages is defined %} {{ uninstalled_packages }} {% else %}no package to update{% endif %}"
 
     - name: "Install packages..."
       ansible.builtin.pacman:
         name: "{{ item }}"
         state: present
       loop: "{{ uninstalled_packages }}"
+      when: uninstalled_packages is defined
 
     - name: Change shell to zsh
       ansible.builtin.user:
