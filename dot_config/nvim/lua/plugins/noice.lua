@@ -32,6 +32,8 @@ return {
               { find = "; after #%d+" },
               { find = "; before #%d+" },
               { find = "clipboard: No provider." },
+              { find = "%d+ lines >ed %d+ time" },
+              { find = "%d+ lines <ed %d+ time" },
             },
           },
           opts = { skip = true },
