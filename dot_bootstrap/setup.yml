@@ -44,6 +44,7 @@
         - ly
         - picom
         - rofi
+        - zoxide
 
     - name: uninstalled packages
       debug:
