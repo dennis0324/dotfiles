@@ -10,7 +10,7 @@
       include_vars: "{{ item }}"
       with_first_found:
         - "vars/distro_packages/install_{{ ansible_os_family }}_packages.yml"
-        - "vars/distro_pacagkes/install_default_packages.yml"
+        - "vars/distro_packages/install_default_packages.yml"
 
     - name: Load Variable Files
       include_vars: "vars/install_default_packages.yml"
