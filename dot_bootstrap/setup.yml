@@ -46,13 +46,14 @@
         - picom
         - rofi
         - zoxide
+        - expect
 
     - name: uninstalled packages
       debug:
         msg: "{% if uninstalled_packages is defined %} {{ uninstalled_packages }} {% else %}no package to update{% endif %}"
 
     - name: "Install packages..."
-      ansible.builtin.pacman:
+      ansible.builtin.package:
         name: "{{ item }}"
         state: present
       loop: "{{ uninstalled_packages }}"
@@ -69,4 +70,4 @@
         name: ly
         state: "started"
         enabled: true
-      when: ansible_facts.services['ly.service'] is defined and ansible_facts.services['ly.service'].state != 'running'
+      when: ansible_facts.services['ly.service'] is defined and ansible_facts.services['ly.service'].state != 'running' and ansible_distribution is match("MacOS")
