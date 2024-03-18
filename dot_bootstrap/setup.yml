@@ -5,6 +5,19 @@
   connection: local
   gather_facts: true
 
+  pre_tasks:
+    - name: Load Variable Files
+      include_vars: "{{ item }}"
+      with_first_found:
+        - "vars/install_{{ ansible_os_family }}_packages.yml"
+
+    - name: Load Variable Files
+      include_vars: "vars/install_default_packages.yml"
+
+    - name:
+      set_fact:
+        total_packages: "{{ spe_packages + default_packages }}"
+
   tasks:
     - name: Get my user
       ansible.builtin.set_fact:
@@ -22,31 +35,13 @@
         name: "{{ remote_regular_user }}"
       register: current_user
 
-    - name: Check installed packages...
+    - name: Check installed packages
       set_fact:
         uninstalled_packages: "{{ uninstalled_packages | default([]) + [ item ]}}"
       when:
         not ((ansible_facts.packages | dict2items | selectattr('key','in',item)) or
         (ansible_facts.packages | dict2items | selectattr('key','match',item)))
-      loop:
-        - git
-        - kitty
-        - htop
-        - neovim
-        - gcc
-        - ripgrep
-        - zsh
-        - fzf
-        - tmux
-        - neofetch
-        - xorg-server
-        - xf86-video-vesa
-        - i3
-        - ly
-        - picom
-        - rofi
-        - zoxide
-        - expect
+      loop: "{{ total_packages}}"
 
     - name: uninstalled packages
       debug:

@@ -1,0 +1,12 @@
+---
+default_packages:
+  - git
+  - htop
+  - neovim
+  - gcc
+  - ripgrep
+  - zsh
+  - fzf
+  - tmux
+  - neofetch
+  - zoxide
