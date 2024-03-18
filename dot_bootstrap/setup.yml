@@ -41,7 +41,7 @@
       when:
         not ((ansible_facts.packages | dict2items | selectattr('key','in',item)) or
         (ansible_facts.packages | dict2items | selectattr('key','match',item)))
-      loop: "{{ total_packages}}"
+      loop: "{{ total_packages }}"
 
     - name: uninstalled packages
       debug:
