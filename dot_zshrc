@@ -42,7 +42,7 @@ source /home/dennis/.config/zsh/plugin/zsh-autosuggestions/zsh-autosuggestions.z
 
 if [ -d ~/.local/share/chezmoi/dot_config/zsh/command ]
 then
-  for file in /home/dennis/.dotfiles/zsh/command/*;
+  for file in /home/dennis/.config/zsh/command/*;
   do
     source "$file"
   done

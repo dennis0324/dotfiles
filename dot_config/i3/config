@@ -236,7 +236,7 @@ gaps outer 10
 gaps top 35
 
 ## background settings
-exec_always feh --bg-scale ~/.information/backgrounds/background2.png
+exec_always feh --bg-scale ~/.backgrounds/background2.png
 
 
 # picom
