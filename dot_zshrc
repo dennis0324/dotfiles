@@ -37,12 +37,12 @@ source ~/.config/powerlevel10k/powerlevel10k.zsh-theme
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
-source /home/dennis/.config/zsh/plugin/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-source /home/dennis/.config/zsh/plugin/zsh-autosuggestions/zsh-autosuggestions.zsh
+source ~/.config/zsh/plugin/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+source ~/.config/zsh/plugin/zsh-autosuggestions/zsh-autosuggestions.zsh
 
 if [ -d ~/.local/share/chezmoi/dot_config/zsh/command ]
 then
-  for file in /home/dennis/.config/zsh/command/*;
+  for file in ~/.config/zsh/command/*;
   do
     source "$file"
   done
