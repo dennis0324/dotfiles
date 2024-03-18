@@ -1,0 +1,7 @@
+---
+- name: "Install Packages(MacOSX)"
+  homebrew:
+    name: "{{ item }}"
+    state: present
+  loop: "{{ uninstalled_packages }}"
+  when: uninstalled_packages is defined

@@ -48,12 +48,11 @@
       debug:
         msg: "{% if uninstalled_packages is defined %} {{ uninstalled_packages }} {% else %}no package to update{% endif %}"
 
-    - name: "Install packages..."
-      ansible.builtin.package:
-        name: "{{ item }}"
-        state: present
-      loop: "{{ uninstalled_packages }}"
-      when: uninstalled_packages is defined
+    - name: "importing packages installer"
+      include_tasks: "{{ item }}"
+      with_first_found:
+        - "tasks/install_packages/install_{{ ansible_os_family }}_packages.yml"
+        - "tasks/install_packages/install_default_packages.yml"
 
     - name: Change shell to zsh
       ansible.builtin.user:
