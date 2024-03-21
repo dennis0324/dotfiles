@@ -7,3 +7,4 @@ spe_packages:
   - picom
   - rofi
   - expect
+  - feh
