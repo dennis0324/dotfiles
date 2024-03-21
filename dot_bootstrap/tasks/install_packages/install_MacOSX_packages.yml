@@ -1,5 +1,6 @@
 ---
 - name: Check installed packages(MacOSX)
+  become: false
   command: brew list -1 | ConvertTo-Json
   register: mac_packages
 
