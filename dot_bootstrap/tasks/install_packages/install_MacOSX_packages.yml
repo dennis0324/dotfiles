@@ -1,23 +1,34 @@
 ---
 - name: Check installed packages(MacOSX)
   become: false
-  command: brew list -1 | ConvertTo-Json
+  command: brew list -1
   register: mac_packages
 
 - name: Check installed packages
   set_fact:
-    uninstalled_packages: "{{ uninstalled_packages | default([]) + [ item ]}}"
-  when: not ((mac_packages | dict2items | selectattr('key','in',item)) or
-    (mac_packages | dict2items | selectattr('key','match',item)))
+    uninstalled_packages: "{{ uninstalled_packages | default([]) + [ package ]}}"
+  when: 
+    not ((mac_packages.stdout | split('\n') | select('match',package)) 
+    or (mac_packages.stdout | split('\n') | select('eq',package)))
   loop: "{{ total_packages }}"
+  loop_control:
+    loop_var: package
 
 - name: uninstalled packages
   debug:
     msg: "{% if uninstalled_packages is defined %} {{ uninstalled_packages }} {% else %}no package to update{% endif %}"
 
+
 - name: "Install Packages(MacOSX)"
-  homebrew:
-    name: "{{ item }}"
-    state: present
-  loop: "{{ uninstalled_packages }}"
-  when: uninstalled_packages is defined
+  block:
+    - become: false
+      homebrew:
+        name: "{{uninstalled_package}}"
+        state: present
+      loop: "{{ uninstalled_packages }}"
+      loop_control:
+        loop_var: uninstalled_package
+      when: uninstalled_packages is defined
+  rescue:
+    - debug:
+        msg: "{{ uninstalled_package }} not downloaded"

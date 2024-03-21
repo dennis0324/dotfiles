@@ -16,8 +16,14 @@
     msg: "{% if uninstalled_packages is defined %} {{ uninstalled_packages }} {% else %}no package to update{% endif %}"
 
 - name: "Install Packages(linux)"
-  ansible.builtin.package:
-    name: "{{ item }}"
-    state: present
-  loop: "{{ uninstalled_packages }}"
-  when: uninstalled_packages is defined
+  block:
+    - ansible.builtin.package:
+        name: "{{ package }}"
+        state: present
+      loop: "{{ uninstalled_packages }}"
+      loop_control:
+        loop_var: package
+      when: uninstalled_packages is defined
+  rescue:
+    debug:
+      msg: "{{ package }} can not be downloaded"
