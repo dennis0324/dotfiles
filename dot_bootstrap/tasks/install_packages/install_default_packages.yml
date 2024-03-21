@@ -25,5 +25,5 @@
         loop_var: package
       when: uninstalled_packages is defined
   rescue:
-    debug:
-      msg: "{{ package }} can not be downloaded"
+    - debug:
+        msg: "{{ package }} can not be downloaded"
