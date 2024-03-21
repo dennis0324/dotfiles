@@ -35,7 +35,7 @@
     - name: "importing packages installer"
       include_tasks: "{{ item }}"
       with_first_found:
-        - "tasks/install_packages/install_{{ ansible_os_family }}_packages.yml"
+        - "tasks/install_packages/install_{{ ansible_distribution }}_packages.yml"
         - "tasks/install_packages/install_default_packages.yml"
 
     - name: Change shell to zsh
