@@ -24,10 +24,6 @@
       ansible.builtin.set_fact:
         remote_regular_user: "{{ ansible_env.SUDO_USER or ansible_user_id }}"
 
-    - name: Gather the package facts...
-      ansible.builtin.package_facts:
-        manager: auto
-
     - name: Gathering services...
       service_facts:
 
@@ -35,18 +31,6 @@
       ansible.builtin.user:
         name: "{{ remote_regular_user }}"
       register: current_user
-
-    - name: Check installed packages
-      set_fact:
-        uninstalled_packages: "{{ uninstalled_packages | default([]) + [ item ]}}"
-      when:
-        not ((ansible_facts.packages | dict2items | selectattr('key','in',item)) or
-        (ansible_facts.packages | dict2items | selectattr('key','match',item)))
-      loop: "{{ total_packages }}"
-
-    - name: uninstalled packages
-      debug:
-        msg: "{% if uninstalled_packages is defined %} {{ uninstalled_packages }} {% else %}no package to update{% endif %}"
 
     - name: "importing packages installer"
       include_tasks: "{{ item }}"

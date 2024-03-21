@@ -1,4 +1,20 @@
 ---
+- name: Gather the package facts(Linux)
+  ansible.builtin.package_facts:
+    manager: auto
+
+- name: Check installed packages
+  set_fact:
+    uninstalled_packages: "{{ uninstalled_packages | default([]) + [ item ]}}"
+  when:
+    not ((ansible_facts.packages | dict2items | selectattr('key','in',item)) or
+    (ansible_facts.packages | dict2items | selectattr('key','match',item)))
+  loop: "{{ total_packages }}"
+
+- name: uninstalled packages
+  debug:
+    msg: "{% if uninstalled_packages is defined %} {{ uninstalled_packages }} {% else %}no package to update{% endif %}"
+
 - name: "Install Packages(linux)"
   ansible.builtin.package:
     name: "{{ item }}"
