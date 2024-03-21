@@ -8,3 +8,5 @@ spe_packages:
   - rofi
   - expect
   - feh
+  - polybar
+  - kitty
