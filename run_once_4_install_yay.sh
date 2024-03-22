@@ -1,7 +1,7 @@
 #!/bin/bash
 # install ayay
 
-if command -v yay &>/dev/null; then
+if ! command -v yay &>/dev/null; then
 	if [ ! -d ~/tmp ]; then
 		mkdir ~/tmp/
 	fi
