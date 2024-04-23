@@ -31,7 +31,7 @@ return {
       { "<leader>sC", false }, --"<cmd>Telescope commands<cr>", desc = "Commands"
       { "<leader>sd", false }, --"<cmd>Telescope diagnostics bufnr=0<cr>", desc = "Document diagnostics"
       { "<ledaer>sD", false }, --"<cmd>Telescope diagnostics<cr>", desc = "Workspace diagnostics"
-      { "<leader>sg", false }, -- Util.telescope("live_grep"), desc = "Grep (root dir)"
+      { "<leader>sg", Util.telescope("live_grep", { cwd = false }), desc = "Grep (cwd)" }, -- Util.telescope("live_grep"), desc = "Grep (root dir)"
       { "<leader>sG", false }, -- Util.telescope("live_grep", { cwd = false }), desc = "Grep (cwd)"
       { "<leader>sh", false }, -- "<cmd>Telescope help_tags<cr>", desc = "Help Pages"
       { "<leader>sH", false }, -- "<cmd>Telescope highlights<cr>", desc = "Search Highlight Groups"
@@ -42,7 +42,7 @@ return {
       { "<leader>sR", false }, -- "<cmd>Telescope resume<cr>", desc = "Resume"
       { "<leader>sw", false }, --Util.telescope("grep_string", { word_match = "-w" }), desc = "Word (root dir)"
       { "<leader>sW", false }, --Util.telescope("grep_string", { cwd = false, word_match = "-w" }), desc = "Word (cwd)"
-      { "<leader>sw", mode = "v", false }, --Util.telescope("grep_string"), mode = "v", desc = "Selection (root dir)"
+      { "<leader>sw", Util.telescope("grep_string", { cwd = false }), mode = "v", desc = "Selection (cwd)" }, --Util.telescope("grep_string"), mode = "v", desc = "Selection (root dir)"
       { "<leader>sW", mode = "v", false }, --Util.telescope("grep_string", { cwd = false }), mode = "v", desc = "Selection (cwd)"
       { "<leader>uC", Util.telescope("colorscheme", { enable_preview = true }), desc = "Colorscheme with preview" },
       { "<leader>ss", false },

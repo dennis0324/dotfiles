@@ -3,7 +3,7 @@ spe_packages:
   - xorg-server
   - xf86-video-vesa
   - i3
-  - ly
+  - lemurs
   - picom
   - rofi
   - expect
