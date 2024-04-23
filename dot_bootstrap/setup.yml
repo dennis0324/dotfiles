@@ -4,20 +4,25 @@
   become: true
   connection: local
   gather_facts: true
+  vars:
+    servert: "{{ server | default('x11')}}"
 
   pre_tasks:
     - name: Load Variable Files
       include_vars: "{{ item }}"
       with_first_found:
-        - "vars/distro_packages/install_{{ ansible_os_family }}_packages.yml"
+        - "vars/distro_packages/{{ ansible_os_family }}/install_{{ ansible_os_family }}_packages.yml"
         - "vars/distro_packages/install_default_packages.yml"
+
+    - name: Load Server Variable Files
+      include_vars: "vars/distro_packages/{{ ansible_os_family }}/{{ servert }}/packages.yml"
 
     - name: Load Variable Files
       include_vars: "vars/install_default_packages.yml"
 
     - name:
       set_fact:
-        total_packages: "{{ spe_packages + default_packages }}"
+        total_packages: "{{ spe_packages + spe_server_packages + default_packages }}"
 
   tasks:
     - name: Get my user
@@ -44,9 +49,9 @@
         shell: /usr/bin/zsh
       when: current_user['shell'] != '/usr/bin/zsh'
 
-    - name: Start ly Service
-      systemd:
-        name: ly
-        state: "started"
-        enabled: true
-      when: ansible_facts.services['ly.service'] is defined and ansible_facts.services['ly.service'].state != 'running' and ansible_distribution is match("MacOS")
+    # - name: Start ly Service
+    #   systemd:
+    #     name: ly
+    #     state: "started"
+    #     enabled: true
+    #   when: ansible_facts.services['ly.service'] is defined and ansible_facts.services['ly.service'].state != 'running' and ansible_distribution is match("MacOS")

@@ -1,14 +1,7 @@
 ---
 spe_packages:
-  - xorg-server
-  - xf86-video-vesa
-  - i3
   - lemurs
-  - picom
-  - rofi
   - expect
-  - feh
-  - polybar
   - kitty
   - discord
   - fcitx5-gtk

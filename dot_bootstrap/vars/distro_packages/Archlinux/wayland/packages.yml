@@ -1,0 +1,10 @@
+---
+spe_server_packages:
+  - qt5-wayland
+  - glfw-wayland
+  - xorg-xwayland
+  - xorg-xlsclients
+  - sway
+  - wofi
+  - swaybg
+  - waybar
