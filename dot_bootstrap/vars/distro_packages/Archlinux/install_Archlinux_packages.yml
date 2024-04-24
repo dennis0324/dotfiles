@@ -8,3 +8,4 @@ spe_packages:
   - fcitx5-hangul
   - fcitx5-configtool
   - flameshot
+  - ranger
