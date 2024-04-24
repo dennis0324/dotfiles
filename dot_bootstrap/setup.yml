@@ -5,7 +5,7 @@
   connection: local
   gather_facts: true
   vars:
-    servert: "{{ server | default('x11')}}"
+    server: "x11"
 
   pre_tasks:
     - name: Load Variable Files
@@ -15,7 +15,7 @@
         - "vars/distro_packages/install_default_packages.yml"
 
     - name: Load Server Variable Files
-      include_vars: "vars/distro_packages/{{ ansible_os_family }}/{{ servert }}/packages.yml"
+      include_vars: "vars/distro_packages/{{ ansible_os_family }}/{{ server }}/packages.yml"
 
     - name: Load Variable Files
       include_vars: "vars/install_default_packages.yml"
