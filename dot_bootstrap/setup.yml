@@ -49,6 +49,9 @@
         shell: /usr/bin/zsh
       when: current_user['shell'] != '/usr/bin/zsh'
 
+    - name: "Running Lemurs Setting"
+      include_tasks: "tasks/lemurs_setting/{{ server }}/lemurs.yml"
+
     # - name: Start ly Service
     #   systemd:
     #     name: ly

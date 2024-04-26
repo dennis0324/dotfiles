@@ -1,0 +1,28 @@
+---
+- name: check lemurs i3
+  stat:
+    path: /etc/lemurs/wms/i3
+  register: lemur_i3
+  when: "server == 'x11'"
+
+- name: Creating Lemurs Folder
+  file:
+    path: "/etc/lemurs/wms"
+    state: directory
+    recurse: true
+
+- name: Setting Lemurs
+  copy:
+    dest: /etc/lemurs/wms/i3
+    mode: "0775"
+    content: |
+      #!/bin/sh
+      exec i3
+  when: not lemur_i3.stat.exists
+
+- name: Start Lemurs Service
+  systemd:
+    name: lemurs
+    state: "started"
+    enabled: true
+  when: ansible_facts.services['lemurs.service'] is defined and ansible_facts.services['lemurs.service'].state != 'running' and ansible_distribution is match("MacOS")

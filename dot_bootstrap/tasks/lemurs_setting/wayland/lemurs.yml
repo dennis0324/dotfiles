@@ -1,0 +1,44 @@
+---
+- name: check lemurs wayland
+  stat:
+    path: /etc/file.txt
+  register: lemur_wayland
+  when: "server == 'wayland'"
+
+- name: Creating Lemurs Folder
+  file:
+    path: "/etc/lemurs/wayland"
+    state: directory
+    recurse: true
+
+- name: Setting Lemurs
+  copy:
+    dest: /etc/lemurs/wayland/sway
+    mode: "0775"
+    content: |
+      #!/bin/sh
+      exec sway
+  when: lemur_i3.stat.exists
+
+- name: Get Groups
+  shell: cat "/etc/group"
+  register: check_group
+
+- name: Check Seat In Group
+  set_fact:
+    check_seat: "{{ check_group.stdout_lines | select('match','seat') | length }}"
+
+- name: Add User Into Seat'
+  user:
+    name: "{{ ansible_env.SUDO_USER }}"
+    shell: /bin/bash
+    groups: seat
+    append: yes
+  when: "check_seat == 1"
+
+- name: Start Lemurs Service
+  systemd:
+    name: lemurs
+    state: "started"
+    enabled: true
+  when: ansible_facts.services['lemurs.service'] is defined and ansible_facts.services['lemurs.service'].state != 'running' and ansible_distribution is match("MacOS")
