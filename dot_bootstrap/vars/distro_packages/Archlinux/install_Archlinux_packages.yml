@@ -1,6 +1,5 @@
 ---
 spe_packages:
-  - lemurs
   - expect
   - kitty
   - discord
@@ -9,3 +8,6 @@ spe_packages:
   - fcitx5-configtool
   - flameshot
   - ranger
+
+spe_yay_packages:
+  - lemurs
