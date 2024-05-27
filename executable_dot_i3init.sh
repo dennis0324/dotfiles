@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 
-
 # mouse sensitive
 # xinput set-prop 15 "Coordinate Transformaton Matrix" 1,0,0,0,1,0,0,0,3
 
@@ -12,12 +11,5 @@ xset s off
 xset -dpms
 
 fcitx5 -d &
-
-
-screens=$(xrandr --listactivemonitors | grep -v "Monitors" | cut -d" " -f6)
-if [[ $screens == *"DP-4"* ]]; then
-  xrandr --output "DP-4" --primary
-fi
-# flameshot
 
 # source $HOME/.venv/bin/activate
