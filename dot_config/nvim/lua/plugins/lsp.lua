@@ -12,7 +12,17 @@ return {
         "tailwindcss-language-server",
         "typescript-language-server",
         "css-lsp",
+        "clang-format",
+        "clangd",
       })
+    end,
+  },
+  {
+    "neovim/nvim-lspconfig",
+    opts = function(_, opts)
+      opts.servers.clangd = {
+        cmd = { "clangd", "--offset-encoding=utf-16" },
+      }
     end,
   },
 }
