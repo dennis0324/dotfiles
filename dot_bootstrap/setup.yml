@@ -43,8 +43,8 @@
 
     - name: "yay install"
       include_tasks: "tasks/install_yay_packages.yml"
-      when: "{{ yay_packages is defined }}"
+      when: "yay_packages is defined"
 
     - name: "Running Lemurs Setting"
       include_tasks: "tasks/lemurs_setting/{{ server }}/lemurs.yml"
-      when: "{{ ansible_os_family != 'MacOSX' }}"
+      when: "ansible_os_family != 'MacOSX'"

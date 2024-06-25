@@ -8,6 +8,8 @@ base_packages:
   - fcitx5-configtool
   - flameshot
   - ranger
+  - tmux
+  - unzip
 
 other_packages:
   - xorg-server
@@ -23,5 +25,6 @@ other_packages:
 
 yay_packages:
   - vieb-bin
-  - lemeurs
+  - lemurs
   - ttf-nanumgothic_coding
+  - ttf-cm-unicode

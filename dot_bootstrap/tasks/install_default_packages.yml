@@ -27,18 +27,3 @@
   rescue:
     - debug:
         msg: "{{ package }} can not be downloaded"
-
-- name: "Install Packages(Arch Linux)"
-  block:
-    - community.general.pacman:
-        name: "{{ yay_package }}"
-        state: present
-        executable: yay
-        extra_args: --builddir /var/cache/yay
-      loop: "{{ spe_yay_packages }}"
-      loop_control:
-        loop_var: yay_package
-      when: uninstalled_packages is defined
-  rescue:
-    - debug:
-        msg: "{{ yay_package }} can not be downloaded"

@@ -25,4 +25,4 @@
     name: lemurs
     state: "started"
     enabled: true
-  when: ansible_facts.services['lemurs.service'] is defined and ansible_facts.services['lemurs.service'].state != 'running' and ansible_distribution is match("MacOS")
+  when: ansible_facts.services['lemurs.service'] is defined and ansible_facts.services['lemurs.service'].state != 'running' and ansible_distribution is not match("MacOS")
