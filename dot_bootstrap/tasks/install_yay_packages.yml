@@ -1,0 +1,13 @@
+---
+- name: Install yay
+  become: true
+  community.general.pacman:
+    name: yay
+    state: present
+
+- name: Install other packages
+  become: true
+  kewlfft.aur.aur:
+    name: "{{ yay_packages }}"
+    use: yay
+    state: present

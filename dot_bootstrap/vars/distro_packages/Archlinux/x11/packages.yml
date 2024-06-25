@@ -1,8 +1,0 @@
----
-spe_server_packages:
-  - xorg-server
-  - xf86-video-vesa
-  - i3
-  - rofi
-  - feh
-  - polybar

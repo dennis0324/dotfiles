@@ -1,3 +1,4 @@
 function rebootwin {
-  /home/dennis/.dotfiles/reboot/rebootwin
+ sudo grub-reboot 2
+ sudo reboot 
 }

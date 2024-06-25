@@ -2,3 +2,4 @@
 .config/fcitx5/conf/cached_layouts
 .secret/password
 .git/
+.config/nvim/lazy-lock.json

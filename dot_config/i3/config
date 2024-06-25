@@ -11,19 +11,23 @@
 
 set $mod Mod1
 
+## i3 settings
+exec bash $HOME/.i3init.sh
+exec_always bash $HOME/.i3reload.sh
+
 # Font for window titles. Will also be used by the bar unless a different font
 # is used in the bar {} block below.
 font pango:Mononoki Nerd Font 8
-
+# font pango:DejaVu Sans Mono 8
 # This font is widely installed, provides lots of unicode glyphs, right-to-left
 # text rendering and scalability on retina/hidpi displays (thanks to pango).
 #font pango:DejaVu Sans Mono 8
 
-set $monitor1 "DP-4"
-set $monitor2 "DP-2"
+set $monitor1 "DP-2"
+set $monitor2 "DP-3"
 
 # set primary monitor and layout 
-exec xrandr --output DP-2 --auto --output DP-4 --primary --left-of DP-2
+
 
 
 # Start XDG autostart .desktop files using dex. See also
@@ -219,9 +223,6 @@ bindsym $mod+r mode "resize"
 
 ## personal configuration
 
-## i3 settings
-exec bash $HOME/.i3init.sh
-exec_always bash $HOME/.i3reload.sh
 
 
 ### border_radius
@@ -261,3 +262,5 @@ bindsym --release shift+Print exec --no-startup-id scrot -s "/home/$USER/Picture
 bindsym --release ctrl+Print exec "scrot -o '/tmp/screenshot_temp.png' -e 'xclip -selection clipboard -target image/png -i < $f'"
 # bindsym --release ctrl+p exec scrot -e 'xclip -selection c -t image/png < $hf' 
 bindsym --release ctrl+shift+Print exec "scrot -o -s '/tmp/screenshot_temp.png' -e 'xclip -selection clipboard -target image/png -i < $f'"
+
+exec i3-msg "workspace $ws1"

@@ -31,6 +31,7 @@ Darwin*)
 	;;
 esac
 
+ansible-galaxy install -r dot_bootstrap/requirements.yml
 ansible-playbook ~/.bootstrap/setup.yml --ask-become-pass --extra-vars "server=$server"
 
 echo "Ansible installation complete."

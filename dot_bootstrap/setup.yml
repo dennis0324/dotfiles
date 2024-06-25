@@ -6,23 +6,15 @@
   gather_facts: true
   vars:
     server: "x11"
+    # the_user: "{{ ansible_user_id }}"
 
   pre_tasks:
     - name: Load Variable Files
-      include_vars: "{{ item }}"
-      with_first_found:
-        - "vars/distro_packages/{{ ansible_os_family }}/install_{{ ansible_os_family }}_packages.yml"
-        - "vars/distro_packages/install_default_packages.yml"
-
-    - name: Load Server Variable Files
-      include_vars: "vars/distro_packages/{{ ansible_os_family }}/{{ server }}/packages.yml"
-
-    - name: Load Variable Files
-      include_vars: "vars/install_default_packages.yml"
+      include_vars: "vars/{{ ansible_os_family }}/{{ server }}_packages.yml"
 
     - name:
       set_fact:
-        total_packages: "{{ spe_packages + spe_server_packages + default_packages }}"
+        total_packages: "{{ base_packages + other_packages }}"
 
   tasks:
     - name: Get my user
@@ -37,24 +29,22 @@
         name: "{{ remote_regular_user }}"
       register: current_user
 
-    - name: "importing packages installer"
-      include_tasks: "{{ item }}"
-      with_first_found:
-        - "tasks/install_packages/install_{{ ansible_distribution }}_packages.yml"
-        - "tasks/install_packages/install_default_packages.yml"
-
     - name: Change shell to zsh
       ansible.builtin.user:
         name: "{{ remote_regular_user }}"
         shell: /usr/bin/zsh
       when: current_user['shell'] != '/usr/bin/zsh'
 
+    - name: "packages install"
+      include_tasks: "{{ item }}"
+      with_first_found:
+        - "tasks/install_{{ ansible_distribution }}_packages.yml"
+        - "tasks/install_default_packages.yml"
+
+    - name: "yay install"
+      include_tasks: "tasks/install_yay_packages.yml"
+      when: "{{ yay_packages is defined }}"
+
     - name: "Running Lemurs Setting"
       include_tasks: "tasks/lemurs_setting/{{ server }}/lemurs.yml"
-
-    # - name: Start ly Service
-    #   systemd:
-    #     name: ly
-    #     state: "started"
-    #     enabled: true
-    #   when: ansible_facts.services['ly.service'] is defined and ansible_facts.services['ly.service'].state != 'running' and ansible_distribution is match("MacOS")
+      when: "{{ ansible_os_family != 'MacOSX' }}"

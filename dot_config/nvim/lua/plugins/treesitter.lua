@@ -2,6 +2,9 @@ return {
   {
     "nvim-treesitter/nvim-treesitter",
     opts = {
+      highlight = {
+        enabled = true,
+      },
       ensure_installed = {
         "astro",
         "cmake",
@@ -17,6 +20,9 @@ return {
         "scss",
         "sql",
         "svelte",
+        "javascript",
+        "typescript",
+        "tsx",
       },
       incremental_selection = {
         enable = true,
