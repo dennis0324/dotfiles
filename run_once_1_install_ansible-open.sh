@@ -8,7 +8,8 @@ install_on_arch() {
 install_on_mac() {
 	brew install ansible
 }
-if [ $server != "wayland" ]; then
+if [[ $server != "wayland" ]]; then
+	echo "Found x11"
 	server=x11
 fi
 
@@ -31,7 +32,7 @@ Darwin*)
 	;;
 esac
 
-ansible-galaxy install -r dot_bootstrap/requirements.yml
+ansible-galaxy install -r ~/.bootstrap/requirements.yml
 ansible-playbook ~/.bootstrap/setup.yml --ask-become-pass --extra-vars "server=$server"
 
 echo "Ansible installation complete."
