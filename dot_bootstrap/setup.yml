@@ -48,3 +48,6 @@
     - name: "Running Lemurs Setting"
       include_tasks: "tasks/lemurs_setting/{{ server }}/lemurs.yml"
       when: "ansible_os_family != 'MacOSX'"
+
+    - name: "Import default settings"
+      include_tasks: "tasks/setup_default_dir.yml"
