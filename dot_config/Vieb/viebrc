@@ -1,5 +1,4 @@
 " Options
-set nocontainerkeeponreopen
 set downloadpath=/home/dennis/Downloads
 set searchengine=https://google.com/search?q=%s
 set suggesttopsites=0

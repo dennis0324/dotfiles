@@ -22,9 +22,12 @@ other_packages:
   - noto-fonts-emoji
   - noto-fonts-cjk
   - xorg-xrandr
+  - qt5-tools
 
 yay_packages:
   - vieb-bin
   - lemurs
   - ttf-nanumgothic_coding
   - ttf-cm-unicode
+  - synergy3-bin
+  - pulseaudio-control

@@ -5,11 +5,17 @@
   register: lemur_i3
   when: "server == 'x11'"
 
+- name: Check Lemurs Folder directory exists
+  stat:
+    path: "/etc/lemurs/wms"
+  register: Lemurs_directory
+
 - name: Creating Lemurs Folder
   file:
     path: "/etc/lemurs/wms"
     state: directory
     recurse: true
+  when: not Lemurs_directory.stat.exists
 
 - name: Setting Lemurs
   copy:
