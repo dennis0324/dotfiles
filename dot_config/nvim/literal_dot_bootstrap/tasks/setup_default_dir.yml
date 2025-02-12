@@ -1,0 +1,35 @@
+---
+- name: Check Downloads directory exists
+  stat:
+    path: "/home/{{ remote_regular_user }}/Download"
+  register: stat_result
+
+- name: Create Downloads directory
+  file:
+    path: "/home/{{ remote_regular_user }}/Download"
+    state: directory
+  when: not stat_result.stat.exists
+
+- name: Check Documents directory exists
+  stat:
+    path: "/home/{{ remote_regular_user }}/Documents"
+  register: stat_result
+
+- name: Create Downloads directory
+  file:
+    path: "/home/{{ remote_regular_user }}/Documents"
+    state: directory
+  when: not stat_result.stat.exists
+
+- name: check line is in visudo
+  shell:
+    cmd: sudo grep -c dennis /etc/sudoers
+  register: grep_output
+
+- name: add needed commands to visudo
+  lineinfile:
+    path: /etc/sudoers
+    state: present
+    line: "{{ remote_regular_user }} ALL=NOPASSWD: /sbin/halt, /sbin/reboot, /sbin/poweroff, /sbin/grub-reboot, /home/{{ remote_regular_user }}/.dotfiles/reboot/rebootwin"
+    validate: /usr/sbin/visudo -cf %s
+  when: grep_output.stdout | int < 1

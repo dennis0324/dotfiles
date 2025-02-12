@@ -1,0 +1,33 @@
+---
+base_packages:
+  - expect
+  - kitty
+  - discord
+  - fcitx5-gtk
+  - fcitx5-hangul
+  - fcitx5-configtool
+  - flameshot
+  - ranger
+  - tmux
+  - unzip
+
+other_packages:
+  - xorg-server
+  - xf86-video-vesa
+  - i3
+  - rofi
+  - feh
+  - polybar
+  - picom
+  - noto-fonts-emoji
+  - noto-fonts-cjk
+  - xorg-xrandr
+  - qt5-tools
+
+yay_packages:
+  - vieb-bin
+  - lemurs
+  - ttf-nanumgothic_coding
+  - ttf-cm-unicode
+  - synergy3-bin
+  - pulseaudio-control
