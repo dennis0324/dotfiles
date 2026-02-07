@@ -1,0 +1,84 @@
+# 설치 가능한 항목 목록
+# install-helper가 이 파일을 읽어 questionary로 선택 UI를 표시합니다.
+
+groups:
+  - name: "앱 (Applications)"
+    items:
+      - id: iterm2
+        name: "iTerm2"
+        description: "터미널 앱"
+      - id: discord
+        name: "Discord"
+        description: "메시징 앱"
+      - id: aldente
+        name: "AlDente"
+        description: "배터리 관리"
+      - id: notion
+        name: "Notion"
+        description: "노트/위키"
+      - id: notion_calendar
+        name: "Notion Calendar"
+        description: "캘린더"
+      - id: scroll_reverser
+        name: "Scroll Reverser"
+        description: "스크롤 방향 설정"
+      - id: cursor
+        name: "Cursor"
+        description: "AI 코드 에디터"
+      - id: microsoft_edge
+        name: "Microsoft Edge"
+        description: "브라우저"
+      - id: rectangle
+        name: "Rectangle"
+        description: "윈도우 관리"
+
+  - name: "개발 도구"
+    items:
+      - id: homebrew
+        name: "Homebrew"
+        description: "패키지 매니저 (대부분 항목의 필수)"
+      - id: zsh
+        name: "zsh"
+        description: "셸"
+      - id: git
+        name: "Git"
+        description: "버전 관리"
+      - id: neovim
+        name: "Neovim"
+        description: "텍스트 에디터"
+      - id: lazyvim
+        name: "LazyVim"
+        description: "Neovim 설정 (Neovim 필요)"
+      - id: tree_sitter
+        name: "tree-sitter-cli"
+        description: "파서 생성기"
+      - id: nvm
+        name: "nvm"
+        description: "Node.js 버전 관리"
+      - id: tmux
+        name: "tmux"
+        description: "터미널 멀티플렉서"
+      - id: pyenv
+        name: "pyenv"
+        description: "Python 버전 관리"
+      - id: uv
+        name: "uv"
+        description: "Python 패키지 매니저"
+      - id: oh_my_zsh
+        name: "oh-my-zsh"
+        description: "zsh 프레임워크"
+      - id: powerlevel10k
+        name: "Powerlevel10k"
+        description: "zsh 테마"
+      - id: zsh_syntax_highlighting
+        name: "zsh-syntax-highlighting"
+        description: "zsh 문법 하이라이트"
+      - id: zsh_autosuggestions
+        name: "zsh-autosuggestions"
+        description: "zsh 자동완성"
+      - id: zsh_history_substring_search
+        name: "zsh-history-substring-search"
+        description: "zsh 히스토리 검색"
+      - id: zoxide
+        name: "zoxide"
+        description: "스마트 cd"

@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+# install.sh: Homebrew → Ansible 설치 → install-helper 실행
+
+set -e
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+cd "$SCRIPT_DIR"
+
+# 1. Homebrew 설치
+if ! command -v brew &>/dev/null; then
+  echo "Homebrew 설치 중..."
+  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+fi
+# Homebrew PATH 적용 (설치 직후 또는 새 쉘)
+[[ -f /opt/homebrew/bin/brew ]] && eval "$(/opt/homebrew/bin/brew shellenv)"
+[[ -f /usr/local/bin/brew ]] && eval "$(/usr/local/bin/brew shellenv)"
+command -v brew &>/dev/null || { echo "Homebrew 설치 실패" >&2; exit 1; }
+
+# 2. Ansible 설치
+if ! command -v ansible-playbook &>/dev/null; then
+  echo "Ansible 설치 중..."
+  brew install ansible
+else
+  echo "Ansible 이미 설치됨"
+fi
+
+# 3. install-helper 실행
+HELPER="$SCRIPT_DIR/install-helper"
+echo "HELPER: $HELPER"
+# [[ -x "$HELPER" ]] || HELPER="$SCRIPT_DIR/install-helper-dev/main.dist/install-helper.bin"
+# if [[ ! -x "$HELPER" ]]; then
+#   echo "오류: install-helper를 찾을 수 없습니다. 먼저 build.sh로 빌드하세요." >&2
+#   exit 1
+# fi
+
+exec "$HELPER"

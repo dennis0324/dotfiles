@@ -1,0 +1,53 @@
+{
+  "editor.formatOnSave": true,
+  "database-client.autoSync": true,
+  "svelte.enable-ts-plugin": true,
+  "python.analysis.diagnosticSeverityOverrides": {},
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "vim.smartRelativeLine": true,
+  "prettier.requireConfig": true,
+  "vim.easymotion": true,
+  "vim.incsearch": true,
+  "vim.useSystemClipboard": true,
+  "vim.useCtrlKeys": true,
+  "vim.hlsearch": true,
+  "vim.normalModeKeyBindingsNonRecursive": [
+    {
+      "before": ["<C-n>"],
+      "commands": [":nohl"]
+    },
+    {
+      "before": ["[", "b"],
+      "commands": ["workbench.action.previousEditor"]
+    },
+    {
+      "before": ["]", "b"],
+      "commands": ["workbench.action.nextEditor"]
+    },
+    {
+      "before": ["<ledaer>", "c", "r"],
+      "commands": ["editor.action.rename"]
+    },
+    {
+      "before": ["K"],
+      "commands": ["editor.action.showHover"]
+    }
+  ],
+  "vim.leader": "<space>",
+  "vim.handleKeys": {
+    "<C-a>": false,
+    "<C-f>": false
+  },
+
+  "extensions.experimental.affinity": {
+    "vscodevim.vim": 1
+  },
+  "git.openRepositoryInParentFolders": "never",
+  "explorer.confirmDragAndDrop": false,
+  "gitlens.ai.model": "gitkraken",
+  "gitlens.ai.gitkraken.model": "gemini:gemini-2.0-flash",
+  "vim.commandLineModeKeyBindingsNonRecursive": [],
+  "geminicodeassist.project": "top-sol-vc4v0",
+  "geminicodeassist.displayInlineContextHint": false,
+  "typescript.updateImportsOnFileMove.enabled": "never"
+}

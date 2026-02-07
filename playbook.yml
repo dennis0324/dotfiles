@@ -1,0 +1,730 @@
+---
+- name: macOS 초기 설정 - Homebrew, 필수 앱 및 개발 도구 설치
+  hosts: localhost
+  connection: local
+  gather_facts: yes
+  
+  tasks:
+    - name: Homebrew 설치 확인 (Intel Mac)
+      stat:
+        path: /usr/local/bin/brew
+      register: brew_check_intel
+      
+    - name: Homebrew 설치 확인 (Apple Silicon)
+      stat:
+        path: /opt/homebrew/bin/brew
+      register: brew_check_arm
+      
+    - name: Homebrew 설치 여부 확인
+      set_fact:
+        brew_installed: "{{ brew_check_arm.stat.exists or brew_check_intel.stat.exists }}"
+      
+    - name: Homebrew 설치
+      shell: /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+      when:
+        - install_homebrew | default(true) | bool
+        - not brew_installed | bool
+      register: brew_install_result
+      changed_when: brew_install_result.rc == 0
+      
+    - name: Homebrew 경로 및 사용자 홈 디렉토리 결정
+      set_fact:
+        brew_path: "{{ '/opt/homebrew/bin/brew' if (ansible_facts['architecture'] == 'arm64' or brew_check_arm.stat.exists) else '/usr/local/bin/brew' }}"
+        brew_env:
+          PATH: "{{ ('/opt/homebrew/bin:/opt/homebrew/sbin:' + ansible_facts['env']['PATH']) if (ansible_facts['architecture'] == 'arm64' or brew_check_arm.stat.exists) else ('/usr/local/bin:/usr/local/sbin:' + ansible_facts['env']['PATH']) }}"
+        user_home: "{{ ansible_facts['user_dir'] | default(lookup('env', 'HOME')) }}"
+      
+    - name: iTerm2가 이미 설치되어 있는지 확인
+      stat:
+        path: /Applications/iTerm.app
+      register: iterm_installed
+      
+    - name: iTerm2 설치 (Homebrew)
+      shell: "{{ brew_path }} install --cask iterm2"
+      environment: "{{ brew_env | default({}) }}"
+      when:
+        - install_iterm2 | default(true) | bool
+        - not iterm_installed.stat.exists
+      register: iterm_install_result
+      
+    - name: iTerm2 설정 디렉토리 확인
+      stat:
+        path: "{{ ansible_facts['user_dir'] | default(lookup('env', 'HOME')) }}/Library/Preferences/com.googlecode.iterm2.plist"
+      register: iterm_settings_exist
+      
+    - name: iTerm2 설정 파일 백업 (기존 설정이 있는 경우)
+      shell: |
+        if [ -f "{{ ansible_facts['user_dir'] | default(lookup('env', 'HOME')) }}/Library/Preferences/com.googlecode.iterm2.plist" ]; then
+          cp "{{ ansible_facts['user_dir'] | default(lookup('env', 'HOME')) }}/Library/Preferences/com.googlecode.iterm2.plist" "{{ ansible_facts['user_dir'] | default(lookup('env', 'HOME')) }}/Library/Preferences/com.googlecode.iterm2.plist.bak"
+        fi
+      when:
+        - install_iterm2 | default(true) | bool
+        - iterm_settings_exist.stat.exists
+      ignore_errors: yes
+      
+    - name: iTerm2 설정 파일 복사
+      copy:
+        src: iterm2.plist
+        dest: "{{ ansible_facts['user_dir'] | default(lookup('env', 'HOME')) }}/Library/Preferences/com.googlecode.iterm2.plist"
+        mode: '0600'
+      when:
+        - install_iterm2 | default(true) | bool
+        - iterm_installed.stat.exists or iterm_install_result.changed | default(false)
+      register: iterm_settings_copied
+      
+    - name: Discord가 이미 설치되어 있는지 확인
+      stat:
+        path: /Applications/Discord.app
+      register: discord_installed
+      
+    - name: Discord 설치 (Homebrew)
+      shell: "{{ brew_path }} install --cask discord"
+      environment: "{{ brew_env | default({}) }}"
+      when:
+        - install_discord | default(true) | bool
+        - not discord_installed.stat.exists
+      register: discord_install_result
+      
+    - name: AlDente가 이미 설치되어 있는지 확인
+      stat:
+        path: /Applications/AlDente.app
+      register: aldente_installed
+      
+    - name: AlDente 설치 (Homebrew)
+      shell: "{{ brew_path }} install --cask aldente"
+      environment: "{{ brew_env | default({}) }}"
+      when:
+        - install_aldente | default(true) | bool
+        - not aldente_installed.stat.exists
+      register: aldente_install_result
+      
+    - name: Notion이 이미 설치되어 있는지 확인
+      stat:
+        path: /Applications/Notion.app
+      register: notion_installed
+      
+    - name: Notion 설치 (Homebrew)
+      shell: "{{ brew_path }} install --cask notion"
+      environment: "{{ brew_env | default({}) }}"
+      when:
+        - install_notion | default(true) | bool
+        - not notion_installed.stat.exists
+      register: notion_install_result
+      
+    - name: Notion Calendar가 이미 설치되어 있는지 확인
+      stat:
+        path: /Applications/Notion Calendar.app
+      register: notion_calendar_installed
+      
+    - name: Notion Calendar 설치 (Homebrew)
+      shell: "{{ brew_path }} install --cask notion-calendar"
+      environment: "{{ brew_env | default({}) }}"
+      when:
+        - install_notion_calendar | default(true) | bool
+        - not notion_calendar_installed.stat.exists
+      register: notion_calendar_install_result
+      
+    - name: Scroll Reverser가 이미 설치되어 있는지 확인
+      stat:
+        path: /Applications/Scroll Reverser.app
+      register: scroll_reverser_installed
+      
+    - name: Scroll Reverser 설치 (Homebrew)
+      shell: "{{ brew_path }} install --cask scroll-reverser"
+      environment: "{{ brew_env | default({}) }}"
+      when:
+        - install_scroll_reverser | default(true) | bool
+        - not scroll_reverser_installed.stat.exists
+      register: scroll_reverser_install_result
+      
+    - name: Cursor가 이미 설치되어 있는지 확인
+      stat:
+        path: /Applications/Cursor.app
+      register: cursor_installed
+      
+    - name: Cursor 설치 (Homebrew)
+      shell: "{{ brew_path }} install --cask cursor"
+      environment: "{{ brew_env | default({}) }}"
+      when:
+        - install_cursor | default(true) | bool
+        - not cursor_installed.stat.exists
+      register: cursor_install_result
+      
+    - name: Microsoft Edge가 이미 설치되어 있는지 확인
+      stat:
+        path: /Applications/Microsoft Edge.app
+      register: microsoft_edge_installed
+      
+    - name: Microsoft Edge 설치 (Homebrew)
+      shell: "{{ brew_path }} install --cask microsoft-edge"
+      environment: "{{ brew_env | default({}) }}"
+      when:
+        - install_microsoft_edge | default(true) | bool
+        - not microsoft_edge_installed.stat.exists
+      register: microsoft_edge_install_result
+      
+    - name: Rectangle이 이미 설치되어 있는지 확인
+      stat:
+        path: /Applications/Rectangle.app
+      register: rectangle_installed
+      
+    - name: Rectangle 설치 (Homebrew)
+      shell: "{{ brew_path }} install --cask rectangle"
+      environment: "{{ brew_env | default({}) }}"
+      when:
+        - install_rectangle | default(true) | bool
+        - not rectangle_installed.stat.exists
+      register: rectangle_install_result
+      
+    # Cursor 설정 및 플러그인 설치
+    - name: Cursor 명령어 경로 확인
+      command: which cursor
+      register: cursor_cmd_check
+      changed_when: false
+      failed_when: false
+      when:
+        - install_cursor | default(true) | bool
+        - cursor_installed.stat.exists or cursor_install_result.changed | default(false)
+      
+    - name: Cursor 명령어 경로 설정
+      set_fact:
+        cursor_path: "{{ cursor_cmd_check.stdout | default('/opt/homebrew/bin/cursor') }}"
+      when:
+        - install_cursor | default(true) | bool
+        - cursor_installed.stat.exists or cursor_install_result.changed | default(false)
+      
+    - name: Cursor 설정 디렉토리 생성
+      file:
+        path: "{{ ansible_facts['user_dir'] | default(lookup('env', 'HOME')) }}/Library/Application Support/Cursor/User"
+        state: directory
+        mode: '0755'
+      when:
+        - install_cursor | default(true) | bool
+        - cursor_installed.stat.exists or cursor_install_result.changed | default(false)
+      
+    - name: Cursor settings.json 복사
+      copy:
+        src: cursor-settings.json
+        dest: "{{ ansible_facts['user_dir'] | default(lookup('env', 'HOME')) }}/Library/Application Support/Cursor/User/settings.json"
+        mode: '0644'
+      when:
+        - install_cursor | default(true) | bool
+        - cursor_installed.stat.exists or cursor_install_result.changed | default(false)
+      register: cursor_settings_copied
+      
+    - name: Cursor 확장 프로그램 설치
+      shell: "{{ cursor_path | default('/opt/homebrew/bin/cursor') }} --install-extension {{ item }}"
+      environment:
+        PATH: "{{ brew_env['PATH'] | default(ansible_facts['env']['PATH']) }}"
+      loop:
+        - anseki.vscode-color
+        - anysphere.cursorpyright
+        - anysphere.remote-ssh
+        - cweijan.dbclient-jdbc
+        - cweijan.vscode-mysql-client2
+        - eamodio.gitlens
+        - esbenp.prettier-vscode
+        - google.geminicodeassist
+        - mhutchie.git-graph
+        - ms-ceintl.vscode-language-pack-ko
+        - ms-pyright.pyright
+        - ms-python.debugpy
+        - ms-python.python
+        - ms-vscode.cpptools
+        - ms-vscode.live-server
+        - naumovs.color-highlight
+        - platformio.platformio-ide
+        - prisma.prisma
+        - rvest.vs-code-prettier-eslint
+        - svelte.svelte-vscode
+        - vscodevim.vim
+        - yoavbls.pretty-ts-errors
+      when:
+        - install_cursor | default(true) | bool
+        - cursor_installed.stat.exists or cursor_install_result.changed | default(false)
+      register: cursor_extensions_install
+      ignore_errors: yes
+      
+    # 개발 도구 설치
+    - name: zsh 설치 확인
+      command: echo $SHELL | grep zsh
+      register: zsh_check
+      changed_when: false
+      failed_when: false
+      
+    - name: zsh 설치 (Homebrew)
+      shell: "{{ brew_path }} install zsh"
+      environment: "{{ brew_env | default({}) }}"
+      when:
+        - install_zsh | default(true) | bool
+        - zsh_check.rc != 0
+      register: zsh_install_result
+      
+    - name: Git 설치 확인
+      command: which git
+      register: git_check
+      changed_when: false
+      failed_when: false
+      
+    - name: Git 설치 (Homebrew)
+      shell: "{{ brew_path }} install git"
+      environment: "{{ brew_env | default({}) }}"
+      when:
+        - install_git | default(true) | bool
+        - git_check.rc != 0
+      register: git_install_result
+      
+    - name: Neovim 설치 확인
+      command: which nvim
+      register: nvim_check
+      changed_when: false
+      failed_when: false
+      
+    - name: Neovim 설치 (Homebrew)
+      shell: "{{ brew_path }} install neovim"
+      environment: "{{ brew_env | default({}) }}"
+      when:
+        - install_neovim | default(true) | bool
+        - nvim_check.rc != 0
+      register: nvim_install_result
+      
+    - name: tree-sitter-cli 설치 확인
+      command: which tree-sitter
+      register: tree_sitter_check
+      changed_when: false
+      failed_when: false
+      
+    - name: tree-sitter-cli 설치 (Homebrew)
+      shell: "{{ brew_path }} install tree-sitter"
+      environment: "{{ brew_env | default({}) }}"
+      when:
+        - install_tree_sitter | default(true) | bool
+        - tree_sitter_check.rc != 0
+      register: tree_sitter_install_result
+      
+    - name: nvm 설치 확인 (Homebrew)
+      command: "{{ brew_path }} list nvm"
+      register: nvm_check
+      changed_when: false
+      failed_when: false
+      ignore_errors: yes
+      
+    - name: nvm 설치 (Homebrew)
+      shell: "{{ brew_path }} install nvm"
+      environment: "{{ brew_env | default({}) }}"
+      when:
+        - install_nvm | default(true) | bool
+        - nvm_check.rc != 0
+      register: nvm_install_result
+      
+    - name: nvm 초기화 스크립트 추가 (.zshrc)
+      blockinfile:
+        path: "{{ user_home }}/.zshrc"
+        marker: "# {mark} ANSIBLE MANAGED BLOCK - nvm"
+        create: yes
+        block: |
+          # nvm
+          export NVM_DIR="$HOME/.nvm"
+          [ -s "$(brew --prefix)/opt/nvm/nvm.sh" ] && \. "$(brew --prefix)/opt/nvm/nvm.sh"
+          [ -s "$(brew --prefix)/opt/nvm/etc/bash_completion.d/nvm" ] && \. "$(brew --prefix)/opt/nvm/etc/bash_completion.d/nvm"
+      when:
+        - install_nvm | default(true) | bool
+        - nvm_check.rc != 0 or nvm_install_result.changed | default(false)
+      register: nvm_zshrc_added
+      
+    - name: tmux 설치 확인
+      command: which tmux
+      register: tmux_check
+      changed_when: false
+      failed_when: false
+      
+    - name: tmux 설치 (Homebrew)
+      shell: "{{ brew_path }} install tmux"
+      environment: "{{ brew_env | default({}) }}"
+      when:
+        - install_tmux | default(true) | bool
+        - tmux_check.rc != 0
+      register: tmux_install_result
+      
+    - name: tmux 설정 파일 복사
+      copy:
+        src: tmux.conf
+        dest: "{{ ansible_facts['user_dir'] | default(lookup('env', 'HOME')) }}/.tmux.conf"
+        mode: '0644'
+      when:
+        - install_tmux | default(true) | bool
+        - tmux_check.rc == 0 or tmux_install_result.changed | default(false)
+      register: tmux_config_copied
+      
+    - name: 기존 Neovim 설정 백업
+      shell: |
+        if [ -d "{{ ansible_facts['user_dir'] | default(lookup('env', 'HOME')) }}/.config/nvim" ]; then
+          mv "{{ ansible_facts['user_dir'] | default(lookup('env', 'HOME')) }}/.config/nvim" "{{ ansible_facts['user_dir'] | default(lookup('env', 'HOME')) }}/.config/nvim.bak"
+        fi
+        if [ -d "{{ ansible_facts['user_dir'] | default(lookup('env', 'HOME')) }}/.local/share/nvim" ]; then
+          mv "{{ ansible_facts['user_dir'] | default(lookup('env', 'HOME')) }}/.local/share/nvim" "{{ ansible_facts['user_dir'] | default(lookup('env', 'HOME')) }}/.local/share/nvim.bak"
+        fi
+        if [ -d "{{ ansible_facts['user_dir'] | default(lookup('env', 'HOME')) }}/.local/state/nvim" ]; then
+          mv "{{ ansible_facts['user_dir'] | default(lookup('env', 'HOME')) }}/.local/state/nvim" "{{ ansible_facts['user_dir'] | default(lookup('env', 'HOME')) }}/.local/state/nvim.bak"
+        fi
+        if [ -d "{{ ansible_facts['user_dir'] | default(lookup('env', 'HOME')) }}/.cache/nvim" ]; then
+          mv "{{ ansible_facts['user_dir'] | default(lookup('env', 'HOME')) }}/.cache/nvim" "{{ ansible_facts['user_dir'] | default(lookup('env', 'HOME')) }}/.cache/nvim.bak"
+        fi
+      args:
+        creates: "{{ ansible_facts['user_dir'] | default(lookup('env', 'HOME')) }}/.config/nvim.bak"
+      when:
+        - install_lazyvim | default(true) | bool
+        - nvim_install_result.changed | default(false)
+      ignore_errors: yes
+      register: nvim_backup_result
+      
+    - name: Neovim 설정 디렉토리 생성
+      file:
+        path: "{{ ansible_facts['user_dir'] | default(lookup('env', 'HOME')) }}/.config/nvim"
+        state: directory
+        mode: '0755'
+      when:
+        - install_lazyvim | default(true) | bool
+        - nvim_install_result.changed | default(false)
+      
+    - name: LazyVim 저장소 클론
+      git:
+        repo: https://github.com/LazyVim/starter.git
+        dest: "{{ ansible_facts['user_dir'] | default(lookup('env', 'HOME')) }}/.config/nvim"
+        version: main
+        force: yes
+      when:
+        - install_lazyvim | default(true) | bool
+        - nvim_install_result.changed | default(false)
+      register: lazyvim_clone_result
+      
+    - name: LazyVim .git 폴더 제거
+      file:
+        path: "{{ ansible_facts['user_dir'] | default(lookup('env', 'HOME')) }}/.config/nvim/.git"
+        state: absent
+      when:
+        - install_lazyvim | default(true) | bool
+        - nvim_install_result.changed | default(false)
+        - lazyvim_clone_result.changed | default(false)
+      
+    - name: LazyVim 설치 확인
+      stat:
+        path: "{{ ansible_facts['user_dir'] | default(lookup('env', 'HOME')) }}/.config/nvim/init.lua"
+      register: lazyvim_installed
+      when:
+        - install_lazyvim | default(true) | bool
+        - nvim_install_result.changed | default(false)
+      
+    - name: pyenv 설치 확인
+      command: which pyenv
+      register: pyenv_check
+      changed_when: false
+      failed_when: false
+      
+    - name: pyenv 설치 (Homebrew)
+      shell: "{{ brew_path }} install pyenv"
+      environment: "{{ brew_env | default({}) }}"
+      when:
+        - install_pyenv | default(true) | bool
+        - pyenv_check.rc != 0
+      register: pyenv_install_result
+      
+    - name: pyenv 초기화 스크립트 확인
+      stat:
+        path: "{{ user_home }}/.zshrc"
+      register: zshrc_exists
+      
+    - name: pyenv 초기화 스크립트 추가 (.zshrc)
+      blockinfile:
+        path: "{{ user_home }}/.zshrc"
+        marker: "# {mark} ANSIBLE MANAGED BLOCK - pyenv"
+        create: yes
+        block: |
+          export PYENV_ROOT="$HOME/.pyenv"
+          [[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"
+          eval "$(pyenv init - zsh)"
+      when:
+        - install_pyenv | default(true) | bool
+        - pyenv_check.rc != 0 or (pyenv_install_result.changed | default(false))
+      register: pyenv_zshrc_added
+      
+    - name: uv 설치 확인
+      command: which uv
+      register: uv_check
+      changed_when: false
+      failed_when: false
+      
+    - name: uv 설치
+      shell: curl -LsSf https://astral.sh/uv/install.sh | env UV_NO_MODIFY_PATH=1 sh
+      args:
+        creates: "{{ user_home }}/.local/bin/uv"
+      when:
+        - install_uv | default(true) | bool
+        - uv_check.rc != 0
+      register: uv_install_result
+      
+    - name: uv PATH 추가 (.zshrc)
+      blockinfile:
+        path: "{{ user_home }}/.zshrc"
+        marker: "# {mark} ANSIBLE MANAGED BLOCK - uv"
+        create: yes
+        block: |
+          # uv (Python package installer)
+          [[ -d $HOME/.local/bin ]] && export PATH="$HOME/.local/bin:$PATH"
+      when: uv_check.rc == 0 or (uv_install_result.changed | default(false))
+      register: uv_zshrc_added
+      
+    - name: oh-my-zsh 설치 확인
+      stat:
+        path: "{{ user_home }}/.oh-my-zsh"
+      register: oh_my_zsh_installed
+      
+    - name: oh-my-zsh 설치
+      shell: sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
+      environment:
+        ZSH: "{{ user_home }}/.oh-my-zsh"
+      when:
+        - install_oh_my_zsh | default(true) | bool
+        - not oh_my_zsh_installed.stat.exists
+      register: oh_my_zsh_install_result
+      
+    - name: powerlevel10k 설치 확인 (Homebrew)
+      command: "{{ brew_path }} list powerlevel10k"
+      register: p10k_brew_check
+      changed_when: false
+      failed_when: false
+      ignore_errors: yes
+      
+    - name: powerlevel10k 설치 확인 (oh-my-zsh 테마)
+      stat:
+        path: "{{ user_home }}/.oh-my-zsh/custom/themes/powerlevel10k"
+      register: p10k_theme_installed
+      
+    - name: powerlevel10k 설치 (Homebrew 시도)
+      shell: "{{ brew_path }} install powerlevel10k"
+      environment: "{{ brew_env | default({}) }}"
+      when:
+        - install_powerlevel10k | default(true) | bool
+        - p10k_brew_check.rc != 0
+        - not p10k_theme_installed.stat.exists
+      register: p10k_brew_install_result
+      ignore_errors: yes
+      
+    - name: powerlevel10k 설치 여부 확인
+      set_fact:
+        p10k_installed_via_brew: "{{ p10k_brew_check.rc == 0 or (p10k_brew_install_result.rc is defined and p10k_brew_install_result.rc == 0) }}"
+      
+    - name: powerlevel10k 테마 설정 추가 (.zshrc) - Homebrew 버전
+      blockinfile:
+        path: "{{ user_home }}/.zshrc"
+        marker: "# {mark} ANSIBLE MANAGED BLOCK - powerlevel10k"
+        create: yes
+        block: |
+          # Powerlevel10k theme
+          source $(brew --prefix)/share/powerlevel10k/powerlevel10k.zsh-theme
+      when:
+        - install_powerlevel10k | default(true) | bool
+        - oh_my_zsh_installed.stat.exists or oh_my_zsh_install_result.changed | default(false)
+        - p10k_installed_via_brew | bool
+      register: p10k_zshrc_added_brew
+      
+    - name: powerlevel10k 테마 설정 추가 (.zshrc) - oh-my-zsh 테마 버전
+      blockinfile:
+        path: "{{ user_home }}/.zshrc"
+        marker: "# {mark} ANSIBLE MANAGED BLOCK - powerlevel10k"
+        create: yes
+        block: |
+          # Powerlevel10k theme
+          ZSH_THEME="powerlevel10k/powerlevel10k"
+      when:
+        - install_powerlevel10k | default(true) | bool
+        - oh_my_zsh_installed.stat.exists or oh_my_zsh_install_result.changed | default(false)
+        - not p10k_installed_via_brew | bool
+        - p10k_installed_via_theme | bool
+      register: p10k_zshrc_added_theme
+      
+    - name: zsh-syntax-highlighting 설치 확인 (Homebrew)
+      command: "{{ brew_path }} list zsh-syntax-highlighting"
+      register: zsh_syntax_highlighting_check
+      changed_when: false
+      failed_when: false
+      ignore_errors: yes
+      
+    - name: zsh-syntax-highlighting 설치 (Homebrew)
+      shell: "{{ brew_path }} install zsh-syntax-highlighting"
+      environment: "{{ brew_env | default({}) }}"
+      when:
+        - install_zsh_syntax_highlighting | default(true) | bool
+        - zsh_syntax_highlighting_check.rc != 0
+      register: zsh_syntax_highlighting_install_result
+      
+    - name: zsh-syntax-highlighting 설정 추가 (.zshrc)
+      blockinfile:
+        path: "{{ user_home }}/.zshrc"
+        marker: "# {mark} ANSIBLE MANAGED BLOCK - zsh-syntax-highlighting"
+        create: yes
+        block: |
+          # zsh-syntax-highlighting
+          source $(brew --prefix)/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+      when:
+        - install_zsh_syntax_highlighting | default(true) | bool
+        - zsh_syntax_highlighting_check.rc == 0 or zsh_syntax_highlighting_install_result.changed | default(false)
+      register: zsh_syntax_highlighting_zshrc_added
+      
+    - name: zsh-autosuggestions 설치 확인 (Homebrew)
+      command: "{{ brew_path }} list zsh-autosuggestions"
+      register: zsh_autosuggestions_check
+      changed_when: false
+      failed_when: false
+      ignore_errors: yes
+      
+    - name: zsh-autosuggestions 설치 (Homebrew)
+      shell: "{{ brew_path }} install zsh-autosuggestions"
+      environment: "{{ brew_env | default({}) }}"
+      when:
+        - install_zsh_autosuggestions | default(true) | bool
+        - zsh_autosuggestions_check.rc != 0
+      register: zsh_autosuggestions_install_result
+      
+    - name: zsh-autosuggestions 설정 추가 (.zshrc)
+      blockinfile:
+        path: "{{ user_home }}/.zshrc"
+        marker: "# {mark} ANSIBLE MANAGED BLOCK - zsh-autosuggestions"
+        create: yes
+        block: |
+          # zsh-autosuggestions
+          source $(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+      when:
+        - install_zsh_autosuggestions | default(true) | bool
+        - zsh_autosuggestions_check.rc == 0 or zsh_autosuggestions_install_result.changed | default(false)
+      register: zsh_autosuggestions_zshrc_added
+      
+    - name: zsh-history-substring-search 설치 확인 (Homebrew)
+      command: "{{ brew_path }} list zsh-history-substring-search"
+      register: zsh_history_substring_search_check
+      changed_when: false
+      failed_when: false
+      ignore_errors: yes
+      
+    - name: zsh-history-substring-search 설치 (Homebrew)
+      shell: "{{ brew_path }} install zsh-history-substring-search"
+      environment: "{{ brew_env | default({}) }}"
+      when:
+        - install_zsh_history_substring_search | default(true) | bool
+        - zsh_history_substring_search_check.rc != 0
+      register: zsh_history_substring_search_install_result
+      
+    - name: zsh-history-substring-search 설정 추가 (.zshrc)
+      blockinfile:
+        path: "{{ user_home }}/.zshrc"
+        marker: "# {mark} ANSIBLE MANAGED BLOCK - zsh-history-substring-search"
+        create: yes
+        block: |
+          # zsh-history-substring-search
+          source $(brew --prefix)/share/zsh-history-substring-search/zsh-history-substring-search.zsh
+      when:
+        - install_zsh_history_substring_search | default(true) | bool
+        - zsh_history_substring_search_check.rc == 0 or zsh_history_substring_search_install_result.changed | default(false)
+      register: zsh_history_substring_search_zshrc_added
+      
+    - name: zoxide 설치 확인 (Homebrew)
+      command: "{{ brew_path }} list zoxide"
+      register: zoxide_check
+      changed_when: false
+      failed_when: false
+      ignore_errors: yes
+      
+    - name: zoxide 설치 (Homebrew)
+      shell: "{{ brew_path }} install zoxide"
+      environment: "{{ brew_env | default({}) }}"
+      when:
+        - install_zoxide | default(true) | bool
+        - zoxide_check.rc != 0
+      register: zoxide_install_result
+      
+    - name: zoxide 설정 추가 (.zshrc)
+      blockinfile:
+        path: "{{ user_home }}/.zshrc"
+        marker: "# {mark} ANSIBLE MANAGED BLOCK - zoxide"
+        create: yes
+        block: |
+          # zoxide
+          if command -v zoxide > /dev/null
+          then
+            eval "$(zoxide init zsh)"
+            alias cd="z"
+          fi
+      when:
+        - install_zoxide | default(true) | bool
+        - zoxide_check.rc == 0 or zoxide_install_result.changed | default(false)
+      register: zoxide_zshrc_added
+      
+    - name: zsh 키 바인딩 설정 추가 (.zshrc)
+      blockinfile:
+        path: "{{ user_home }}/.zshrc"
+        marker: "# {mark} ANSIBLE MANAGED BLOCK - zsh key bindings"
+        create: yes
+        block: |
+          # zsh key bindings
+          bindkey -e
+          bindkey '^H' backward-kill-word
+          bindkey '5~' kill-word
+          bindkey '^[[1;9C' forward-word
+          bindkey '^[[1;9D' backward-word
+      register: zsh_keybindings_added
+      
+    - name: tmux 자동 실행 설정 추가 (.zshrc)
+      blockinfile:
+        path: "{{ user_home }}/.zshrc"
+        marker: "# {mark} ANSIBLE MANAGED BLOCK - tmux auto attach"
+        create: yes
+        block: |
+          # tmux auto attach (iTerm2에서만 실행)
+          if [[ "$TERM_PROGRAM" == "iTerm.app" ]] && [[ -z "$TMUX" ]] && command -v tmux &> /dev/null; then
+            tmux attach -t $(tmux ls 2>/dev/null | grep -v attached | head -1 | cut -f1 -d:) 2>/dev/null || tmux
+          fi
+      when: tmux_check.rc == 0 or tmux_install_result.changed | default(false)
+      register: tmux_auto_attach_added
+      
+    - name: 설치 완료 확인
+      stat:
+        path: "{{ item.path }}"
+      register: final_check
+      loop:
+        - { name: "iTerm2", path: "/Applications/iTerm.app" }
+        - { name: "Discord", path: "/Applications/Discord.app" }
+        - { name: "AlDente", path: "/Applications/AlDente.app" }
+        - { name: "Notion", path: "/Applications/Notion.app" }
+        - { name: "Notion Calendar", path: "/Applications/Notion Calendar.app" }
+        - { name: "Scroll Reverser", path: "/Applications/Scroll Reverser.app" }
+        - { name: "Cursor", path: "/Applications/Cursor.app" }
+        - { name: "Microsoft Edge", path: "/Applications/Microsoft Edge.app" }
+        - { name: "Rectangle", path: "/Applications/Rectangle.app" }
+      
+    - name: 앱 설치 결과 출력
+      debug:
+        msg: "{{ item.item.name }}가 성공적으로 설치되었습니다: {{ item.item.path }}"
+      when: item.stat.exists
+      loop: "{{ final_check.results }}"
+      
+    - name: 개발 도구 설치 결과 확인
+      debug:
+        msg: "{{ item.name }}가 성공적으로 설치되었습니다."
+      when: item.installed | default(false)
+      loop:
+        - { name: "zsh", installed: "{{ zsh_check.rc == 0 or zsh_install_result.changed | default(false) }}" }
+        - { name: "Git", installed: "{{ git_check.rc == 0 or git_install_result.changed | default(false) }}" }
+        - { name: "Neovim", installed: "{{ nvim_check.rc == 0 or nvim_install_result.changed | default(false) }}" }
+        - { name: "tree-sitter-cli", installed: "{{ tree_sitter_check.rc == 0 or tree_sitter_install_result.changed | default(false) }}" }
+        - { name: "nvm", installed: "{{ nvm_check.rc == 0 or nvm_install_result.changed | default(false) }}" }
+        - { name: "tmux", installed: "{{ tmux_check.rc == 0 or tmux_install_result.changed | default(false) }}" }
+        - { name: "LazyVim", installed: "{{ lazyvim_installed.stat.exists | default(false) or lazyvim_clone_result.changed | default(false) }}" }
+        - { name: "pyenv", installed: "{{ pyenv_check.rc == 0 or pyenv_install_result.changed | default(false) }}" }
+        - { name: "uv", installed: "{{ uv_check.rc == 0 or uv_install_result.changed | default(false) }}" }
+        - { name: "oh-my-zsh", installed: "{{ oh_my_zsh_install_result.changed | default(false) or oh_my_zsh_installed.stat.exists }}" }
+        - { name: "powerlevel10k", installed: "{{ p10k_installed_via_brew | default(false) }}" }
+        - { name: "zsh-syntax-highlighting", installed: "{{ zsh_syntax_highlighting_check.rc == 0 or zsh_syntax_highlighting_install_result.changed | default(false) }}" }
+        - { name: "zsh-autosuggestions", installed: "{{ zsh_autosuggestions_check.rc == 0 or zsh_autosuggestions_install_result.changed | default(false) }}" }
+        - { name: "zsh-history-substring-search", installed: "{{ zsh_history_substring_search_check.rc == 0 or zsh_history_substring_search_install_result.changed | default(false) }}" }
+        - { name: "zoxide", installed: "{{ zoxide_check.rc == 0 or zoxide_install_result.changed | default(false) }}" }
+

@@ -1,0 +1,9 @@
+# macOS
+.DS_Store
+
+# 개인정보/민감정보 포함 파일 (온라인 공개 시 제외)
+Default.json
+default.itermcolors
+
+# cursor
+.cursor/
